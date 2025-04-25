@@ -1,0 +1,115 @@
+{
+  "requiredKeys": {
+    "transportDocumentReference": {
+      "type": "string",
+      "pattern": "^\\S(?:.*\\S)?$"
+    },
+    "transportDocumentStatus": {
+      "type": "string"
+    },
+    "transportDocumentTypeCode": {
+      "type": "string",
+      "enum": [
+        "BOL",
+        "SWB"
+      ]
+    },
+    "isShippedOnBoardType": {
+      "type": "boolean"
+    },
+    "isElectronic": {
+      "type": "boolean"
+    },
+    "isToOrder": {
+      "type": "boolean"
+    },
+    "partyContactDetails": {
+      "type": "array"
+    },
+    "documentParties": {
+      "shipper": {
+        "partyName": {
+          "type": "string",
+          "pattern": "^\\S(?:.*\\S)?$"
+        }
+      },
+      "issuingParty": {
+        "partyName": {
+          "type": "string",
+          "pattern": "^\\S(?:.*\\S)?$"
+        },
+        "address": {
+          "street": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string",
+            "pattern": "^\\S(?:.*\\S)?$"
+          },
+          "countryCode": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          }
+        }
+      }
+    },
+    "consignmentItems": {
+      "type": "array"
+    },
+    "utilizedTransportEquipments": {
+      "type": "array"
+    },
+    "termsAndConditions": {
+      "type": "string"
+    },
+    "receiptTypeAtOrigin": {
+      "type": "string",
+      "enum": [
+        "CY",
+        "SD",
+        "CFS"
+      ]
+    },
+    "deliveryTypeAtDestination": {
+      "type": "string",
+      "enum": [
+        "CY",
+        "SD",
+        "CFS"
+      ]
+    },
+    "cargoMovementTypeAtOrigin": {
+      "type": "string"
+    },
+    "cargoMovementTypeAtDestination": {
+      "type": "string"
+    },
+    "carrierCode": {
+      "type": "string",
+      "pattern": "^\\S+$"
+    },
+    "carrierCodeListProvider": {
+      "type": "string",
+      "enum": [
+        "SMDG",
+        "NMFTA"
+      ]
+    },
+    "transports": {
+      "plannedArrivalDate": {
+        "type": "string"
+      },
+      "plannedDepartureDate": {
+        "type": "string"
+      },
+      "vesselVoyages": {
+        "type": "array"
+      }
+    }
+  },
+  "d": {
+    "\\S.*\\S": "fun0",
+    "[A-Z]{2}": "fun1",
+    "\\S+": "fun2"
+  }
+}
