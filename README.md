@@ -75,7 +75,7 @@ git clone https://github.com/chainaimlabs/ZK-PRET-TEST-V3.git
 Navigate to the following directory in your terminal:
 
 ```
-cd /ZK-PRET-TEST-V2/zkapps/ZK-PRET-DEV/PRET-ZK-RWA-SCF
+cd /ZK-PRET-DEV-V3
 ```
 
 Then, execute the following commands in sequence:
@@ -97,33 +97,33 @@ npm run build
 Execute each of the following commands to run individual test cases:
 
 ```bash
-node ./build/src/CorporateRegistrationVerificationTestWithSign.js
+node ./build/tests/with-sign/CorporateRegistrationVerificationTestWithSign.js
 ```
 
 ```bash
-node ./build/src/EXIMVerificationTestWithSign.js
+node ./build/tests/with-sign/EXIMVerificationTestWithSign.js
 ```
 
 ```bash
-node ./build/src/GLEIFVerificationTestWithSign.js
+node ./build/tests/with-sign/GLEIFVerificationTestWithSign.js
 ```
 
 ```bash
-node ./build/src/BusinessStandardDataIntegrityVerificationTest.js
+node ./build/tests/with-sign/BusinessStandardDataIntegrityVerificationTest.js
 ```
 
 ```bash
-node ./build/src/BusinessProcessIntegrityVerificationTest.js "a(cb|bc)d(ef|f)g" "abcdefg"
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationTestWithSign.js "a(cb|bc)d(ef|f)g" "abcdefg"
 ```
 
 ```bash
-node ./build/src/BusinessProcessIntegrityVerificationFileTest.js bpmn-SCF-Example-Process-Expected.bpmn bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn result.txt
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTest.js src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn src/data/scf/process/bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn result.txt
 ```
 
-*   **Note:** For the `BusinessProcessIntegrityVerificationFileTest.js` test, you can replace `"bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn"` with any of the `*.bpmn` files located in the `ZK-PRET-DEV-V2\zkapps\ZK-PRET-DEV\PRET-ZK-RWA-SCF\` directory (Accepted or Rejected).
+*   **Note:** For the `BusinessProcessIntegrityVerificationFileTest.js` test, you can replace `"bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn"` with any of the `*.bpmn` files located in the `ZK-PRET-DEV-V3\src\data\scf\process\` directory (Accepted or Rejected).
 
 ```bash
-node ./build/src/ComposedRecursive3LevelVerificationTestWithSign.js
+node ./build/tests/with-sign/ComposedRecursive3LevelVerificationTestWithSign.js
 ```
 
 **4. Risk Liquidity ACTUS Verifier Tests:**
@@ -132,27 +132,27 @@ node ./build/src/ComposedRecursive3LevelVerificationTestWithSign.js
 
 Either use the actus server hosted locally on http://localhost:8083 using `ACTUS_NODE_LOCAL` or the online actus server http://98.84.165.146:8083 using `ACTUS_NODE_REMOTE`
     ```bash
-    node build/src/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 0.5
+    node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 0.5
     ```
 or
     ```bash
-    node build/src/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 1
+   node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 1
     ```
 *   **Failing Test:**
 
     ```bash
-    node build/src/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 2
+    node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 2
     ```
 *   **RiskLiquidityACTUSVerifierTest_adv_zk_Withsign.js Tests:**
     *   **Passing Test:**
 
         ```bash
-         node ./build/src/RiskLiquidityACTUSVerifierTest_adv_zk_Withsign.js "ACTUS_NODE_REMOTE" 8
+          node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js "ACTUS_NODE_REMOTE" 8
         ```
     *   **Failing Test:**
 
         ```bash
-         node ./build/src/RiskLiquidityACTUSVerifierTest_adv_zk_Withsign.js "ACTUS_NODE_REMOTE" 9
+          node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js "ACTUS_NODE_REMOTE" 9
         ```
 
     *   **Important:** Docker needs to be running for the `RiskLiquidityACTUSVerifierTest_adv_zk.js` and `RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js` tests.
@@ -161,7 +161,7 @@ or
    Alternatively, to run test cases in one go:
 
 ```bash
-node ./build/src/runAllTests.js
+node ./build/tests/with-sign/runAllTests.js
 ```
 
 ### Setting up ACTUS Verifier with Docker
