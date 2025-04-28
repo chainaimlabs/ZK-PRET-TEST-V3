@@ -131,13 +131,14 @@ node ./build/tests/with-sign/ComposedRecursive3LevelVerificationTestWithSign.js
 *   **Passing Tests:**
 
 Either use the actus server hosted locally on http://localhost:8083 using `ACTUS_NODE_LOCAL` or the online actus server http://98.84.165.146:8083 using `ACTUS_NODE_REMOTE`
-    ```bash
+ ```bash
     node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 0.5
-    ```
+```
 or
-    ```bash
-   node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 1
-    ```
+```bash
+    node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 1
+```
+    
 *   **Failing Test:**
 
     ```bash
