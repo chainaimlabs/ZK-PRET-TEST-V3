@@ -57,8 +57,8 @@ The Internatunal Trade Finance is a 2-3 T opportunity, currently under-penerated
 
 
 ## The Presentation 
+[ZK-PRET-RWA-MidPoint-Review-Presented.pptx](https://github.com/user-attachments/files/19946371/ZK-PRET-RWA-MidPoint-Review-Presented.pptx)
 
-![ZK-PRET-RWA-MidPoint-Review-Presented.pptx](https://github.com/user-attachments/files/19540339/ZK-PRET-RWA-MidPoint-Review-Presented.pptx)
 
 ## Running the Implementation
 
@@ -67,7 +67,7 @@ This document provides instructions for running the ZK-PRET-DEV-V2 implementatio
 **1. Clone the Repository:**
 
 ```bash
-git clone https://github.com/chainaimlabs/ZK-PRET-TEST-V2.git
+git clone https://github.com/chainaimlabs/ZK-PRET-TEST-V3.git
 ```
 
 ### Running Test Cases from Node Runtime
