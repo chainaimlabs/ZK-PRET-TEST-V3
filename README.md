@@ -113,10 +113,6 @@ node ./build/tests/with-sign/BusinessStandardDataIntegrityVerificationTest.js
 ```
 
 ```bash
-node ./build/tests/with-sign/BusinessProcessIntegrityVerificationTestWithSign.js "a(cb|bc)d(ef|f)g" "abcdefg"
-```
-
-```bash
 node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTest.js src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn src/data/scf/process/bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn result.txt
 ```
 
@@ -139,7 +135,7 @@ or
     node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 1
 ```
     
-*   **Failing Test:**
+*   **Test to prove Failing case:**
 
     ```bash
     node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 2
@@ -150,7 +146,7 @@ or
         ```bash
           node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js "ACTUS_NODE_REMOTE" 8
         ```
-    *   **Failing Test:**
+    *   **Test to prove Failing case:**
 
         ```bash
           node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js "ACTUS_NODE_REMOTE" 9
@@ -195,81 +191,6 @@ For testing, use the expected, actual, or rejected files from the `bpmn-docs` di
 
 
 #### Local Environment Setup
-
-To run the demo in a local environment, use the `bussiness-process-prover-local` directory. This setup includes both the frontend and backend components.
-
-**1. Backend Setup:**
-
-*   Navigate to the project's root directory:
-
-    ```
-    cd /ZK-PRET-TEST-V2/zkapps/ZK-PRET-DEV/PRET-ZK-RWA-SCF
-    ```
-*   Install Dependencies:
-
-    ```powershell
-    npm install
-    ```
-*   Build the Project:
-
-    ```powershell
-    npm run build
-    ```
-
-**2. Business Process Prover - Local Setup:**
-
-*   Open a **new** terminal window.
-*   Navigate to the `bussiness-process-prover-local` directory:
-
-    ```
-    cd /ZK-PRET-TEST-V2/zkapps/ZK-PRET-DEV/PRET-ZK-RWA-SCF/bussiness-process-prover-local
-    ```
-*   Install Dependencies:
-
-    ```powershell
-    npm install
-    ```
-
-**3. Backend Server Setup:**
-
-*   Open a **new** terminal window.
-*   Navigate to the `backend` directory:
-
-    ```
-    cd /ZK-PRET-TEST-V2/zkapps/ZK-PRET-DEV/PRET-ZK-RWA-SCF/bussiness-process-prover-local/backend
-    ```
-*   Install Express:
-
-    ```bash
-    npm install express
-    ```
-*   Start the Server:
-
-    ```bash
-    node server.js
-    ```
-
-    The server should now be running on `http://localhost:4000`.
-
-**4. Frontend Setup:**
-
-*   Open a **new** terminal window.
-*   Navigate to the `frontend` directory:
-
-    ```
-    cd /ZK-PRET-TEST-V2/zkapps/ZK-PRET-DEV/PRET-ZK-RWA-SCF/bussiness-process-prover-local/frontend
-    ```
-*   Install React Scripts:
-
-    ```powershell
-    npm install react-scripts
-    ```
-*   Start the Frontend:
-
-    ```powershell
-    npm start
-    ```
-
 
 
 ![Alt Text](images/img6.png)
