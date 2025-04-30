@@ -1,5 +1,4 @@
 import { Field, Mina, PrivateKey, AccountUpdate, Poseidon, CircuitString, Signature } from 'o1js';
-//import { CorporateRegistrationProof, CorporateRegistration } from './CorporateRegistrationZKProgram.js';
 import { BusinessProcessIntegrityZKProgram, BusinessProcessIntegrityData } from '../../zk-programs/with-sign/BusinessProcessIntegrityZKProgramWithSign.js';
 import { BusinessProcessIntegrityVerifierSmartContract } from '../../contracts/with-sign/BusinessProcessIntegrityVerifierSmartContractWithSign.js';
 // import { BusinessProverdeployerAccount, BusinessProversenderAccount, BusinessProverdeployerKey, BusinessProversenderKey, getPrivateKeyFor, Local } from './OracleRegistry.js';
@@ -40,13 +39,8 @@ async function main() {
 
    // Compile artifacts
    console.log('Compiling...');
-   //await SecretHash.compile();
-   // await CorporateRegistration.compile();
 
    await BusinessProcessIntegrityZKProgram.compile();
-
-   //const { verificationKey } = await HashVerifier.compile();
-
    const { verificationKey } = await BusinessProcessIntegrityVerifierSmartContract.compile();
 
    console.log("verification key is successful");
@@ -59,7 +53,7 @@ async function main() {
      await Mina.fundAccount({ address: zkAppAddress, initialBalance: 10 });
    }).send();*/
 
-   //const zkApp = new HashVerifier(zkAppAddress);
+
    const zkApp = new BusinessProcessIntegrityVerifierSmartContract(zkAppAddress);
 
    /*await Mina.transaction(deployerPublicKey, async () => {
@@ -75,7 +69,6 @@ async function main() {
       async () => {
          AccountUpdate.fundNewAccount(BusinessProverdeployerAccount);
          await zkApp.deploy({ verificationKey });
-         //zkApp.storedHash.set(Field(42));
 
       }
    );

@@ -90,7 +90,7 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
                    PublicKey.fromBase58('B62qmXFNvz2sfYZDuHaY5htPGkx1u2E2Hn3rWuDWkE11mxRmpijYzWN'),
                    CorporateRegistrationData.toFields(corporateRegistrationData)
                  );
-                 validSignature.assertTrue();
+                 validSignature.assertTrue();            
          
                  const validSignature_ = creatorSignature.verify(
                    creatorPublicKey,
