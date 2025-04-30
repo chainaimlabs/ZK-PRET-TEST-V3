@@ -190,7 +190,7 @@ The implementation currently supports the Supply Chain Finance BPMN model as an 
 For testing, use the expected, actual, or rejected files from the `bpmn-docs` directory.
 
 
-#### Local Environment Setup
+#### Business Process Prover 
 
 
 ![Alt Text](images/img6.png)
