@@ -1,4 +1,3 @@
-// import { verifyProcess } from './contracts/bpmnCircuit.js';
 import { verifyProcess } from '../../contracts/bpmnCircuit.js';
 import {
    Field,
@@ -36,8 +35,6 @@ export class BusinessProcessIntegrityData extends Struct({
 export class BusinessProcessIntegrityPublicOutput extends Struct({
    businessProcessID: Field,
    out: Bool,
-   //corporateComplianceToProveHash: Field,
-   //currCorporateComplianceStatusCodeHash: Field,
    //outputExpectedHash: Field,
    //outputActualHash: Field,
    //creatorPublicKey: PublicKey,
@@ -64,11 +61,7 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
          ],
          async method(
             businessProcessIntegrityToProve: Field,
-            //expPath:CircuitString,
-            //expectedActiveComplianceHash: CircuitString.fromString("Active").hash(),
-            //corporateRegistrationData: CorporateRegistrationData,
             businessProcessIntegrityData: BusinessProcessIntegrityData,
-            //actualPath:BusinessProcessIntegrityData.actualContent,
             oracleSignature: Signature,
             //oracleSignature: Signature,
             //creatorSignature: Signature,
@@ -125,11 +118,15 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
 
 
                   /* Provable.asProver(() => {
+                  
                     console.log( "actual path ",businessProcessIntegrityData.actualContent.toString);
                     input=Bytes50.fromString(`${businessProcessIntegrityData.actualContent}`);
                   
                   });
-                  Provable.log(businessProcessIntegrityData.actualContent);*/
+                  Provable.log(businessProcessIntegrityData.actualContent);
+                  
+                  */
+
                   //onst actualPath2=businessProcessIntegrityData.actualContent;
                   //console.log("ActualPath2:",actualPath2.values.toString());
 
@@ -143,19 +140,12 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
 
                   out.assertTrue();
 
-                  //*******BusinessStandardIntegrityZKProgram */
-                  //we have to call a circuit which is the circuit he called already I would rather call it DCProver
-                  //DCProver has a out function that is similar to bpmn which is supposed to give true or false.
-                  //
-
                }
 
                out = Bool(true);
 
                return new BusinessProcessIntegrityPublicOutput({
-                  //corporateComplianceToProve: corporateComplianceToProve,
-                  //currCompanyComplianceStatusCode: corporateRegistrationData.currCompanyComplianceStatusCode,
-                  //outputExpectedHash: Field(corporateRegistationToProveHash),
+                                    //outputExpectedHash: Field(corporateRegistationToProveHash),
                   //outputActualHash: Field(1),
                   //creatorPublicKey: creatorPublicKey,
                   businessProcessID: businessProcessIntegrityData.businessProcessID,
@@ -175,8 +165,6 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
                out = Bool(false);
 
                return new BusinessProcessIntegrityPublicOutput({
-                  //corporateComplianceToProve: corporateComplianceToProve,
-                  //currCompanyComplianceStatusCode: corporateRegistrationData.currCompanyComplianceStatusCode,
                   //outputExpectedHash: Field(corporateRegistationToProveHash),
                   //outputActualHash: Field(1),
                   //creatorPublicKey: creatorPublicKey,
@@ -187,9 +175,6 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
                   // complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
 
                });
-
-
-
             }
          },
       },
