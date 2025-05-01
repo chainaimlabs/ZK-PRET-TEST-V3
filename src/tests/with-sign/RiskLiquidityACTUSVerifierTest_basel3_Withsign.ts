@@ -1,26 +1,23 @@
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString, Poseidon, Signature } from 'o1js';
-//import { CorporateRegistrationProof, CorporateRegistration } from './CorporateRegistrationZKProgram.js';
 import { loadAndProcessJsonData } from '../../core/map_basel3.js';
-import { LiquidityRatio, ACTUSData } from '../../zk-programs/with-sign/RiskLiquidityACTUSZKProgram_basel3_Withsign.js';
+import { LiquidityRatioZkprogram, ACTUSData } from '../../zk-programs/with-sign/RiskLiquidityACTUSZKProgram_basel3_Withsign.js';
 import { LiquidityRatioVerifierSmartContract } from '../../contracts/with-sign/RiskLiquidityVerifierACTUSSmartContract_basel3_Withsign.js';
 import axios from 'axios';
 
 import { getPrivateKeyFor } from '../../core/OracleRegistry.js';
-//import { loadAndProcessJson } from './map_dynamic_range_flow.js';
-//import {  } from './CorporateRegistrationVerifierSmartContract.js';
-//import {  }  from './CorporateRegistrationZKProgram.js';
-//import { SecretHash, SecretHashProof } from './SecretHash.js';
+
 async function main() {
    /*const Local = Mina.LocalBlockchain({ proofsEnabled: true });
  
-  // Mina.setActiveInstance(Local);
-  const localInstance = await Local; // Await the promise before using it
- Mina.setActiveInstance(localInstance);
+  //Mina.setActiveInstance(Local);
+   const localInstance = await Local; // Await the promise before using it
+   Mina.setActiveInstance(localInstance);
    const deployer = (await Local).testAccounts[0].key;
    const deployerPublicKey = deployer.toPublicKey();*/
 
    const useProof = false;
    const userLiquidityThreshold_LCR = parseFloat(process.argv[2]);
+   const url = process.argv[3];
    const Local = await Mina.LocalBlockchain({ proofsEnabled: useProof });
    Mina.setActiveInstance(Local);
 
@@ -35,12 +32,8 @@ async function main() {
 
    // Compile artifacts
    console.log('Compiling...');
-   //await SecretHash.compile();
-   // await CorporateRegistration.compile();
 
-   await LiquidityRatio.compile();
-
-   //const { verificationKey } = await HashVerifier.compile();
+   await LiquidityRatioZkprogram.compile();
    const { verificationKey } = await LiquidityRatioVerifierSmartContract.compile();
 
    console.log("verification key is successful");
@@ -80,15 +73,10 @@ async function main() {
    console.log("deployTxn is successful");
    await deployTxn.sign([deployerKey, zkAppKey]).send();
    console.log("deployTxn signed successfully");
-
-   // Generate test proof
-
-   //const secret = Field(42);
-   //const correctHash = Poseidon.hash([secret]);
-   //const proof = await SecretHash.generate(correctHash, secret);
-
    // URL of the server
-   const url = 'http://localhost:8083/eventsBatch';
+   //const url = 'http://localhost:8083/eventsBatch';
+   //const url = 'http://98.84.165.146:8083/eventsBatch';
+    
 
    // Data to send in the POST request
    const data = {
@@ -181,41 +169,17 @@ async function main() {
    //console.log(jsondata);
 
    console.log("Fetching compliance data...");
-   /*const basePath = "D:/chainaimlabs/actus live server/RiskProver_Prabakaran_4thfeb/scf-main/scf-rwa/zkapps/scf-rwa-recursion/";// mention basepath
-   const relativePath = "src/response.json";
-   const fullPath = path.join(basePath, relativePath);*/
-   // Fetch data from the API (as you're already doing)
-
    // Call the function to process cash flow data
    const { inflow: cashInflow, outflow: cashOutflow, monthsCount, results: classifiedContracts }: { inflow: any[], outflow: any[], monthsCount: number, results: { [key: string]: { L1: number, L2A: number, L2B: number, NonHQLA: number } } } = loadAndProcessJsonData(jsondata);
 
-   // Debugging outputs
-   //console.log("Cash Inflow:", cashInflow);
-   //console.log("Cash Outflow:", cashOutflow);
-   //console.log(JSON.stringify(classifiedContracts, null, 2));
-   // [L1, L2A, L2B]
+   
    const cinflow = cashInflow.map(arr => arr.reduce((sum: any, num: any) => sum + num, 0));
    const coutflow = cashOutflow.map(arr => arr.reduce((sum: any, num: any) => sum + num, 0));
-   //const Inf: number[] = cashInflow.map((block: any[]) => block.reduce((sum: any, value: any) => sum + value, 0));
-   //const Outf: number[] = cashOutflow.map((block: any[]) => block.reduce((sum: any, value: any) => sum + value, 0));
-   //console.log("**Inflow:",Inf);
-   //console.log("**Outflow:",Outf);
-
-   //deposits - inflow,represented as contracts (cash contract)
-   //existing loans
-   //newly evaluated loans 
-   //accounts recievable
-   //accounts payable
-
+   
    const totalHQLA_L1 = Object.values(classifiedContracts).map(month => month.L1);
    const totalHQLA_L2A = Object.values(classifiedContracts).map(month => month.L2A);
    const totalHQLA_L2B = Object.values(classifiedContracts).map(month => month.L2B);
    const totalNonHQLA = Object.values(classifiedContracts).map(month => month.NonHQLA);
-
-   //console.log("Total HQLA L1:",totalHQLA_L1);
-   //console.log("Total HQLA L2A:",totalHQLA_L2A);
-   //console.log("Total HQLA L2B:",totalHQLA_L2B);
-   //console.log("Total Non HQLA:",totalNonHQLA);
 
    const riskScenario1Data = {
       companyID: 'Financier 10001',
@@ -227,42 +191,40 @@ async function main() {
       cashOutflow: coutflow,
       newInvoiceAmount: 5000,
       newInvoiceEvaluationMonth: 11,
-      //liquidityThreshold:Math.round(userLiquidityThreshold),
-
       liquidityThreshold: Math.round(10),
       liquidityThreshold_lcr: Math.round(userLiquidityThreshold_LCR),
       inflowLength: monthsCount,  // Pass inflowLength
    };
 
    const risk1Data = new ACTUSData({
-      // ✅ Scenario Identifiers
+      // Scenario Identifiers
       scenarioID: CircuitString.fromString(riskScenario1Data.companyID),
       scenarioName: CircuitString.fromString(riskScenario1Data.companyName),
       scenarioName_str: "scenario_1",
       riskEvaluated: Field(riskScenario1Data.riskEvaluated),
 
-      // ✅ Cash Flow Data
+      // Cash Flow Data
       cashInflows: riskScenario1Data.cashInflow.flat(),  // Flatten to match expected format
       cashOutflows: riskScenario1Data.cashOutflow.flat(), // Flatten to match expected format
       inflowLength: riskScenario1Data.cashInflow.flat().length,
       outflowLength: riskScenario1Data.cashOutflow.flat().length,
 
-      // ✅ LCR Calculation Data
+      //  LCR Calculation Data
       newInvoiceAmount: riskScenario1Data.newInvoiceAmount,
       newInvoiceEvaluationMonth: riskScenario1Data.newInvoiceEvaluationMonth,
       liquidityThreshold: riskScenario1Data.liquidityThreshold,
       liquidityThreshold_LCR: riskScenario1Data.liquidityThreshold_lcr,
 
-      // ✅ Classified Contracts (For HQLA Computation)
+      // Classified Contracts (For HQLA Computation)
       classifiedContracts: Object.entries(classifiedContracts).map(([id, { L1, L2A, L2B, NonHQLA }]) => ({
          id,
-         type: 'someType', // Replace with actual type if available
-         hqlaCategory: 'someCategory', // Replace with actual category if available
-         inflowTotal: L1 + L2A + L2B, // Adjust as needed
-         outflowTotal: NonHQLA // Adjust as needed
+         type: 'someType', 
+         hqlaCategory: 'someCategory',
+         inflowTotal: L1 + L2A + L2B, 
+         outflowTotal: NonHQLA 
       })),
 
-      // ✅ Aggregated HQLA Values for LCR Calculation
+      // Aggregated HQLA Values for LCR Calculation
       totalHQLA_L1: totalHQLA_L1,
       totalHQLA_L2A: totalHQLA_L2A,
       totalHQLA_L2B: totalHQLA_L2B,
@@ -276,7 +238,7 @@ async function main() {
 
    //===============================================================================================================
 
-   const proof = await LiquidityRatio.proveCompliance(Field(0), risk1Data, oracleSignature)
+   const proof = await LiquidityRatioZkprogram.proveCompliance(Field(0), risk1Data, oracleSignature)
 
    console.log("Before verification, Initial value of num:", zkApp.num.get().toJSON());
    // Verify proof
