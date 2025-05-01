@@ -11,8 +11,7 @@ async function main() {
   // Mina.setActiveInstance(Local);
   const localInstance = await Local; // Await the promise before using it
  Mina.setActiveInstance(localInstance);
-   const deployer = (await Local).testAccounts[0].key;
-  
+  const deployer = (await Local).testAccounts[0].key;
   const deployerPublicKey = deployer.toPublicKey();*/
 
    const expectedPath = process.argv[2];
@@ -76,11 +75,6 @@ async function main() {
    await deployTxn.sign([BusinessProverdeployerKey, zkAppKey]).send();
    console.log("deployTxn signed successfully");
 
-   // Generate test proof
-
-   //const secret = Field(42);
-   //const correctHash = Poseidon.hash([secret]);
-   //const proof = await SecretHash.generate(correctHash, secret);
 
    //console.log("Fetching compliance data...");
    const response = await axios.get('https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io/vernon_mca');
@@ -133,7 +127,7 @@ async function main() {
    // const oracleSignature = Signature.create(Oracle_Private_key.key, [complianceDataHash]);
    const oracleSignature = Signature.create(registryPrivateKey, [complianceDataHash]);
 
-   console.log("Before verification, Initial value of num:", zkApp.num.get().toJSON());
+   console.log("Before verification, Initial value of num:", zkApp.risk.get().toJSON());
 
    //const exp=CircuitString.fromString("a(cb|bc)d(ef|f)g");
    // console.log(ActualContent****",complianceData.actualContent.toString())
@@ -162,7 +156,7 @@ async function main() {
    console.log(BusinessProversenderKey.toJSON(), BusinessProversenderKey.toPublicKey());
    console.log("Generated Proof:", proof1.toPretty());
    await txn.sign([BusinessProversenderKey]).send();
-   console.log("Final value of num:", zkApp.num.get().toJSON());
+   console.log("Final value of num:", zkApp.risk.get().toJSON());
 
    console.log('✅ Proof verified successfully!');
 
