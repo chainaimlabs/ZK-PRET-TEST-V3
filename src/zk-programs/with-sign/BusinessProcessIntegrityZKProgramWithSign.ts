@@ -29,8 +29,6 @@ export class BusinessProcessIntegrityData extends Struct({
    str: String
 }) { }
 
-
-
 // Define the Public Output Structure
 export class BusinessProcessIntegrityPublicOutput extends Struct({
    businessProcessID: Field,
@@ -39,7 +37,6 @@ export class BusinessProcessIntegrityPublicOutput extends Struct({
    //outputActualHash: Field,
    //creatorPublicKey: PublicKey,
 }) { }
-
 
 function isValidString(str: String) {
    return str != null && str.trim().length > 0;
@@ -63,7 +60,6 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
             businessProcessIntegrityToProve: Field,
             businessProcessIntegrityData: BusinessProcessIntegrityData,
             oracleSignature: Signature,
-            //oracleSignature: Signature,
             //creatorSignature: Signature,
             //creatorPublicKey: PublicKey
          ): Promise<BusinessProcessIntegrityPublicOutput> {
@@ -80,89 +76,23 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
                );
                isValidSignature.assertTrue();
 
-               const str = businessProcessIntegrityData.str;
-               //console.log('str:',str);
                const actualContent = businessProcessIntegrityData.actualContent;
                console.log('actual ||||||||||||||| content |||||||||||||||||', actualContent);
-
-               /*  
-                 const validSignature = oracleSignature.verify(
-                   PublicKey.fromBase58('B62qmXFNvz2sfYZDuHaY5htPGkx1u2E2Hn3rWuDWkE11mxRmpijYzWN'),
-                   CorporateRegistrationData.toFields(corporateRegistrationData)
-                 );
-                 validSignature.assertTrue();            
-         
-                 const validSignature_ = creatorSignature.verify(
-                   creatorPublicKey,
-                   CorporateRegistrationData.toFields(corporateRegistrationData)
-                 );
-                 validSignature_.assertTrue();
-                 */
-
-
+        
                if (isValidString(actualContent)) {
 
                   // ----------------------------------------------------
                   //console.log( "expected path ",businessProcessIntegrityData.expectedContent.values.toString);
-                  //console.log( "actual path ",businessProcessIntegrityData.actualContent.toString);
-
-                  //This works
-                  //const actualPath1=CircuitString.fromString("abcdfg");
-
-                  const actualPath1 = CircuitString.fromString(actualContent);
-                  //console.log("ActualPath1:",actualPath1.values.toString());
-
+                  const actualPath = CircuitString.fromString(actualContent);
                   // console.log( "actual path ",businessProcessIntegrityData.actualContent.toString);
-                  //  let input=Bytes50.fromString(`${businessProcessIntegrityData.actualContent}`);
-                  //Provable.log(businessProcessIntegrityData.expectedContent);
+           
+                  out = verifyProcess(Bytes50.fromString(`${actualPath}`).bytes);
+                  console.log(' actual Path.. ', actualPath.toString(), " ############ Final Result...:", out.toJSON());
+                  //out.assertTrue(); // Removed the asserts and intermittent states.
+               
+               //out = Bool(true); // Removed the asserts and intermittent states.
 
-
-                  /* Provable.asProver(() => {
-                  
-                    console.log( "actual path ",businessProcessIntegrityData.actualContent.toString);
-                    input=Bytes50.fromString(`${businessProcessIntegrityData.actualContent}`);
-                  
-                  });
-                  Provable.log(businessProcessIntegrityData.actualContent);
-                  
-                  */
-
-                  //onst actualPath2=businessProcessIntegrityData.actualContent;
-                  //console.log("ActualPath2:",actualPath2.values.toString());
-
-                  //this works
-
-                  out = verifyProcess(Bytes50.fromString(`${actualPath1}`).bytes);
-
-                  //const out=verifyProcess(Bytes50.fromString(`${actualPath2}`).bytes);
-
-                  console.log(' actual Path.. ', actualPath1.toString(), " ############ Final Result...:", out.toJSON());
-
-                  out.assertTrue();
-
-               }
-
-               out = Bool(true);
-
-               return new BusinessProcessIntegrityPublicOutput({
-                                    //outputExpectedHash: Field(corporateRegistationToProveHash),
-                  //outputActualHash: Field(1),
-                  //creatorPublicKey: creatorPublicKey,
-                  businessProcessID: businessProcessIntegrityData.businessProcessID,
-                  out: out,
-                  //companyName: corporateRegistrationData.companyName,
-                  //companyID: corporateRegistrationData.companyID,
-                  // complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
-
-               });
-
-
-            }
-            catch (error) {
-
-               console.log(' catching error ... ', error);
-
-               out = Bool(false);
+               /*
 
                return new BusinessProcessIntegrityPublicOutput({
                   //outputExpectedHash: Field(corporateRegistationToProveHash),
@@ -172,15 +102,28 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
                   out: out,
                   //companyName: corporateRegistrationData.companyName,
                   //companyID: corporateRegistrationData.companyID,
-                  // complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
+                  //complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
 
                });
-            }
-         },
-      },
-
-   },
-});
-
+               */
+            }        
+         }
+         catch (error) {
+            console.log(' out , ', out, ' catching error ... ' , error);
+            //out = Bool(false);
+         }
+         return new BusinessProcessIntegrityPublicOutput({
+            //outputExpectedHash: Field(corporateRegistationToProveHash),
+            //outputActualHash: Field(1),
+            //creatorPublicKey: creatorPublicKey,
+            businessProcessID: businessProcessIntegrityData.businessProcessID,
+            out: out,
+            //companyName: corporateRegistrationData.companyName,
+            //companyID: corporateRegistrationData.companyID,
+            // complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
+         });
+      }
+   }
+} });
 
 export class BusinessProcessIntegrityProof extends ZkProgram.Proof(BusinessProcessIntegrityZKProgram) { }

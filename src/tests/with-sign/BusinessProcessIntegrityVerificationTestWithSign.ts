@@ -6,6 +6,7 @@ import { getPrivateKeyFor } from '../../core/OracleRegistry.js';
 
 import axios from 'axios';
 async function main() {
+
    /*const Local = Mina.LocalBlockchain({ proofsEnabled: true });
  
   // Mina.setActiveInstance(Local);
@@ -33,7 +34,6 @@ async function main() {
 
    /*const deployerKeypair = PrivateKey.random();
    const deployer = deployerKeypair;*/
-
    //const deployer = localInstance.testAccounts[0].keypair.privateKey; // If keypair exists
 
    // Compile artifacts
@@ -82,9 +82,6 @@ async function main() {
 
    //console.log(parsedData);
 
-   //console.log(parsedData["CIN"]);
-   //console.log(parsedData["Active Compliance"]);
-
    const complianceData = new BusinessProcessIntegrityData({
       /*companyID: CircuitString.fromString(parsedData["CIN"] || ''),
       companyName: CircuitString.fromString(parsedData["Company Name"] || ''),
@@ -124,17 +121,13 @@ async function main() {
    //const sameKey = getDeployerPrivateKey();
    const registryPrivateKey = getPrivateKeyFor('BPMN');
    // Sign the message hash with the oracle's private key
-   // const oracleSignature = Signature.create(Oracle_Private_key.key, [complianceDataHash]);
    const oracleSignature = Signature.create(registryPrivateKey, [complianceDataHash]);
 
-   console.log("Before verification, Initial value of num:", zkApp.risk.get().toJSON());
+   console.log("Before verification, Initial value of risk:", zkApp.risk.get().toJSON());
 
    //const exp=CircuitString.fromString("a(cb|bc)d(ef|f)g");
    // console.log(ActualContent****",complianceData.actualContent.toString())
    const proof = await BusinessProcessIntegrityZKProgram.proveCompliance(Field(0), complianceData, oracleSignature);
-
-   //console.log('Corporate Registration Compliance Data ..', EXIMcomplianceData.entityName.toString(), ' compliance ..', EXIMcomplianceData.iecStatus) ;
-   //console.log('Corporate Registration Oracle Signature..', oracleSignature.toJSON());
 
    console.log('generating proof ..', proof.toJSON());
    //console.log('...........proof public output...  ^^^^^^^^^^^^^^^^', proof.publicOutput.out.toJSON());
@@ -149,14 +142,17 @@ async function main() {
    // await txn.sign([zkAppKey]).send();
 
    const proof1 = await txn.prove();
-   //await txn.prove();
 
    console.log("Proof generated successfully");
    console.log(BusinessProversenderAccount.toJSON());
    console.log(BusinessProversenderKey.toJSON(), BusinessProversenderKey.toPublicKey());
    console.log("Generated Proof:", proof1.toPretty());
+
+   console.log("sending txn ");
    await txn.sign([BusinessProversenderKey]).send();
-   console.log("Final value of num:", zkApp.risk.get().toJSON());
+   console.log("sent txn ");
+
+   console.log("$$$$$$$$$$$$$Final value of risk:$$$$$$$$$$$$$$$", zkApp.risk.get().toJSON());
 
    console.log('✅ Proof verified successfully!');
 

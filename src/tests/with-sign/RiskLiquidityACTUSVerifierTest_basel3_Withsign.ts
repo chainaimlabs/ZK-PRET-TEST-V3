@@ -50,7 +50,6 @@ async function main() {
 
    const zkApp = new LiquidityRatioVerifierSmartContract(zkAppAddress);
 
-
    console.log("zkApp is successful");
 
    /*await Mina.transaction(deployerPublicKey, async () => {
