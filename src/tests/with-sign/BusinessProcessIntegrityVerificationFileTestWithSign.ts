@@ -41,6 +41,8 @@ function runPythonScript(fileName: string): Promise<string> {
 
 
 async function main() {
+
+   
    /*const Local = Mina.LocalBlockchain({ proofsEnabled: true });
  
   // Mina.setActiveInstance(Local);
@@ -117,6 +119,7 @@ async function main() {
 
    //console.log("Mina transaction is successful");
 
+
    const deployTxn = await Mina.transaction(
       deployerAccount,
       async () => {
@@ -127,6 +130,8 @@ async function main() {
    console.log("deployTxn is successful");
    await deployTxn.sign([deployerKey, zkAppKey]).send();
    console.log("deployTxn signed successfully");
+
+   try{  
 
    // Generate test proof
    //console.log("Fetching compliance data...");
@@ -188,6 +193,14 @@ async function main() {
    console.log("$$$$$$$$$$$Final value of risk from client...$$$$$$$$$$$$$.:",zkApp.risk.get().toJSON());
 
    console.log('✅ Proof verified successfully!');
+
+  } 
+  
+  catch(error){
+   console.log("$$$$$$$$$$$Final value of risk from client...$$$$$$$$$$$$$.:",zkApp.risk.get().toJSON());
+   console.error('Error:', error);
+  }
+
 }
 
 main().catch(err => {

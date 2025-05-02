@@ -4,7 +4,7 @@ import { BusinessProcessIntegrityProof } from '../../zk-programs/with-sign/Busin
 import { BusinessProcessIntegrityZKProgram, BusinessProcessIntegrityData } from '../../zk-programs/with-sign/BusinessProcessIntegrityZKProgramWithSign.js';
 import { getPublicKeyFor } from '../../core/OracleRegistry.js';
 import { verifyProcess } from '../../contracts/bpmnCircuit.js';
-class Bytes50 extends Bytes(20) { }
+class Bytes80 extends Bytes(20) { }
 
 // Define the ComplianceData struct
 
@@ -83,15 +83,13 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
          const out = proof.publicOutput.out;
 
           //console.log(' out from public output in smart contract', out.toBoolean());
-         //out.assertTrue();
+         //out.assertTrue(); -- removed the assert.
+
          // Update the state based on the assert of the public output available from the ZKprogram evaluation.
          // if the assertTrue passes - that means the Business Process Actual was as Expected, and hence num which
          // represents risk can be reduced.
 
          const updatedNum = currentNum.sub(10);
-         //this.risk.set(updatedNum);
-              
-         //Alternately, 
     
          // CHECK WITH MINA EXPERT Revision Notes..  Alternately, Change the impl to 
 
@@ -119,13 +117,6 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
           
           // If this.risk is State<Field>, store newState.value
           this.risk.set(newState);
-
-         //Provable.if(out.assertTrue()) {
-         //Provable.if(verifyProcess(Bytes50.fromString(`${actualPath}`).bytes)) {
-         //const updatedNum = currentNum.sub(10);
-         //this.risk.set(updatedNum);
-         //} 
-
          const finalNum = this.risk.get();
         
          Provable.asProver(() => {

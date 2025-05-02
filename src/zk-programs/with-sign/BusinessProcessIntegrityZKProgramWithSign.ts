@@ -19,7 +19,7 @@ import {
 } from 'o1js';
 // import { ZkRegex } from 'zk-regex-o1js';
 import { getPublicKeyFor } from '../../core/OracleRegistry.js';
-class Bytes50 extends Bytes(20) { }
+class Bytes100 extends Bytes(100) { }
 
 // import axios from 'axios';
 export class BusinessProcessIntegrityData extends Struct({
@@ -86,7 +86,7 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
                   const actualPath = CircuitString.fromString(actualContent);
                   // console.log( "actual path ",businessProcessIntegrityData.actualContent.toString);
            
-                  out = verifyProcess(Bytes50.fromString(`${actualPath}`).bytes);
+                  out = verifyProcess(Bytes100.fromString(`${actualPath}`).bytes);
                   console.log(' actual Path.. ', actualPath.toString(), " ############ Final Result...:", out.toJSON());
                   //out.assertTrue(); // Removed the asserts and intermittent states.
                
@@ -110,7 +110,7 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
          }
          catch (error) {
             console.log(' out , ', out, ' catching error ... ' , error);
-            //out = Bool(false);
+            out = Bool(false);
          }
          return new BusinessProcessIntegrityPublicOutput({
             //outputExpectedHash: Field(corporateRegistationToProveHash),
