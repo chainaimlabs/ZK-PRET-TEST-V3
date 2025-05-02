@@ -128,28 +128,28 @@ node ./build/tests/with-sign/ComposedRecursive3LevelVerificationTestWithSign.js
 
 Either use the actus server hosted locally on http://localhost:8083 using `ACTUS_NODE_LOCAL` or the online actus server http://98.84.165.146:8083 using `ACTUS_NODE_REMOTE`
  ```bash
-    node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 0.5
+    node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js 0.5 http://98.84.165.146:8083/eventsBatch
 ```
 or
 ```bash
-    node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 1
+    node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js 1 http://98.84.165.146:8083/eventsBatch
 ```
     
 *   **Test to prove Failing case:**
 
     ```bash
-    node build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js "ACTUS_NODE_REMOTE" 2
+    node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_Withsign.js 2 http://98.84.165.146:8083/eventsBatch
     ```
 *   **RiskLiquidityACTUSVerifierTest_adv_zk_Withsign.js Tests:**
     *   **Passing Test:**
 
         ```bash
-          node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js "ACTUS_NODE_REMOTE" 8
+          node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js 8 http://98.84.165.146:8083/eventsBatch
         ```
     *   **Test to prove Failing case:**
 
         ```bash
-          node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js "ACTUS_NODE_REMOTE" 9
+          node ./build/tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js 9 http://98.84.165.146:8083/eventsBatch
         ```
 
     *   **Important:** Docker needs to be running for the `RiskLiquidityACTUSVerifierTest_adv_zk.js` and `RiskLiquidityACTUSVerifierTest_adv_zk_WithSign.js` tests.
