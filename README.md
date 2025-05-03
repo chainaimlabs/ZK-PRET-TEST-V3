@@ -113,7 +113,7 @@ node ./build/tests/with-sign/BusinessStandardDataIntegrityVerificationTest.js
 ```
 
 ```bash
-node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTest.js src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn src/data/scf/process/bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn result.txt
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSign.js src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn src/data/scf/process/bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn result.txt
 ```
 
 *   **Note:** For the `BusinessProcessIntegrityVerificationFileTest.js` test, you can replace `"bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn"` with any of the `*.bpmn` files located in the `ZK-PRET-DEV-V3\src\data\scf\process\` directory (Accepted or Rejected).
