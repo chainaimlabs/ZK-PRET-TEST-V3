@@ -43,34 +43,22 @@ function runPythonScript(fileName: string): Promise<string> {
 async function main() {
 
    
-   /*const Local = Mina.LocalBlockchain({ proofsEnabled: true });
+   //const Local = Mina.LocalBlockchain({ proofsEnabled: true });
  
-  // Mina.setActiveInstance(Local);
-  const localInstance = await Local; // Await the promise before using it
- Mina.setActiveInstance(localInstance);
-   const deployer = (await Local).testAccounts[0].key;
-   const deployerPublicKey = deployer.toPublicKey();*/
-   //const expectedPath: string | null=prompt();
-   //const actualPath: string | null=prompt();
-   /*if (process.argv.length !== 8) {
-     console.log(process.argv[0]);
-     console.log(process.argv[1]);
-     console.log(process.argv[2]);
-     console.log(process.argv[3]);
-     console.error('Usage: node BusinessProcessIntegrityVerificationTest.js <expected_file> <actual_file>');
-     process.exit(1);
- }*/
+
    //console.log('Current working directory **************************:', process.cwd());
 
    const expectedPath = await parseBpmn(expectedBPMNFileName) || "";
    const actualPath = await parseBpmn(actualBPMNFileName) || "";
 
+   /*
    const outputData = {
       businessProcessIntegrityCheckID: 1,
       timestamp: new Date().toISOString(),
       expectedPath,
       actualPath
    };
+   */
 
    //const expectedPath = process.argv[2];
    //const expectedPath = "a(cb|bc)d(ef|f)g";
@@ -97,7 +85,13 @@ async function main() {
    // Compile artifacts
    // console.log('Compiling...');
 
+   // Can this call also be taken out of this program, to a independent compile...?
    await BusinessProcessIntegrityZKProgram.compile();
+
+   // This CALL will be done as a CLI eventually, so that this smart contract is compiled
+   // and deployed independently, outside of this file. But for , now we are using this 
+   // to surfacce a problem we are seeing and to discuss. 
+
    const { verificationKey } = await BusinessProcessIntegrityVerifierSmartContract.compile();
 
    console.log("verification key is successful");
@@ -143,7 +137,7 @@ async function main() {
    //console.log(parsedData["CIN"]);
    //console.log(parsedData["Active Compliance"]);
 
-   const complianceData = new BusinessProcessIntegrityData({
+   const bpComplianceData = new BusinessProcessIntegrityData({
       /*companyID: CircuitString.fromString(parsedData["CIN"] || ''),
       companyName: CircuitString.fromString(parsedData["Company Name"] || ''),
       companyStatus: CircuitString.fromString(parsedData["Company Status"]),
@@ -152,13 +146,13 @@ async function main() {
       businessProcessID: Field(parsedData["BusinessProcess ID"] ?? 0),
       expectedContent: CircuitString.fromString(expectedPath),
       // expectedContent: "ABC",
-      actualContent: actualPath,
+      actualContent: CircuitString.fromString(actualPath),
       str: "String to print"
    });
 
    // =================================== Oracle Signature Generation ===================================
    // Create message hash
-   const complianceDataHash = Poseidon.hash(BusinessProcessIntegrityData.toFields(complianceData));
+   const complianceDataHash = Poseidon.hash(BusinessProcessIntegrityData.toFields(bpComplianceData));
 
    //const sameKey = getDeployerPrivateKey();
    const registryPrivateKey = getPrivateKeyFor('BPMN');
@@ -167,7 +161,7 @@ async function main() {
 
    //const exp=CircuitString.fromString("a(cb|bc)d(ef|f)g");
    //console.log("ActualContent****",complianceData.actualContent.toString())
-   const proof = await BusinessProcessIntegrityZKProgram.proveCompliance(Field(0), complianceData, oracleSignature);
+   const proof = await BusinessProcessIntegrityZKProgram.proveCompliance(Field(0), bpComplianceData, oracleSignature);
 
    //console.log( 'Public Output', proof.publicOutput.businessProcessID.toJSON(), '  out ' , proof.publicOutput.out.toBoolean());
    //console.log("Before verification, Initial value of risk:",zkApp.risk.get().toJSON());

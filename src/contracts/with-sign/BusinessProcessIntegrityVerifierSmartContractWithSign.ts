@@ -66,14 +66,16 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
       const updatedNum = currentNum.sub(10);
       this.risk.set(updatedNum);
     }
-*/
+
+    */
+
 
    /* This method verifies the compliance based on the 
       Proof generated in the ZKProgram.
    */
    @method async verifyComplianceWithProof(proof: BusinessProcessIntegrityProof) {
 
-      try {
+   
          // Ensure the state of `num` matches its current value
          this.risk.requireEquals(this.risk.get());
          const currentNum = this.risk.get();
@@ -81,7 +83,19 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
          proof.verify();
 
          const out = proof.publicOutput.out;
+         out.assertTrue();
+         const updatedNum = currentNum.sub(10);
 
+               // If this.risk is State<Field>, store newState.value
+               this.risk.set(updatedNum);
+               const finalNum = this.risk.get();
+              
+               Provable.asProver(() => {
+                  console.log( 'final new state value  ',  finalNum.toJSON());
+                });
+
+
+/*
           //console.log(' out from public output in smart contract', out.toBoolean());
          //out.assertTrue(); -- removed the assert.
 
@@ -89,7 +103,7 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
          // if the assertTrue passes - that means the Business Process Actual was as Expected, and hence num which
          // represents risk can be reduced.
 
-         const updatedNum = currentNum.sub(10);
+        
     
          // CHECK WITH MINA EXPERT Revision Notes..  Alternately, Change the impl to 
 
@@ -114,23 +128,6 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
           Provable.asProver(() => {
             console.log( ' eval new state out   ' , out.toJSON(), ' curr ', currentNum.toJSON(), ' upd ', updatedNum.toJSON(),    '  new state '  ,newState.toJSON(), ' value  ',  this.risk.get().toJSON());
           });
-          
-          // If this.risk is State<Field>, store newState.value
-          this.risk.set(newState);
-         const finalNum = this.risk.get();
-        
-         Provable.asProver(() => {
-            console.log( 'final new state ',newState.toJSON(), ' value  ',  finalNum.toJSON());
-          });
-
-      }
-      catch (error) {
-         console.log('catching error in SMART CONTRACT');
-         console.log(' error ', error);
-         //const finalNum = this.risk.get();
-         //console.log( 'final num  err ', finalNum.toJSON())
-      }
-
    }
 
 }

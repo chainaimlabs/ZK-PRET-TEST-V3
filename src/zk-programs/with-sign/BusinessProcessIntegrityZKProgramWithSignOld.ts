@@ -63,6 +63,11 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
             //creatorSignature: Signature,
             //creatorPublicKey: PublicKey
          ): Promise<BusinessProcessIntegrityPublicOutput> {
+
+            let out = Bool(true);
+            //let out = Bool(false);
+
+            //try {
                // =================================== Oracle Signature Verification ===================================
                const complianceDataHash = Poseidon.hash(BusinessProcessIntegrityData.toFields(businessProcessIntegrityData));
                const registryPublicKey = getPublicKeyFor('BPMN');
@@ -78,17 +83,65 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
                   [complianceDataHash]
                );
 
+
                isValidSignature.assertTrue();
 
                const actualContent = businessProcessIntegrityData.actualContent;
-               console.log('actual ||||||||||||||| content |||||||||||||||||', actualContent.length());
+               console.log('actual ||||||||||||||| content |||||||||||||||||', actualContent);
         
-                  const out = verifyProcess( actualContent.values.map((c) => UInt8.from(c.toField())));
+               //if (isValidString(actualContent)) {
+
+                  // ----------------------------------------------------
+                  //console.log( "expected path ",businessProcessIntegrityData.expectedContent.values.toString);
+                  //const actualPath = CircuitString.fromString(actualContent);
+                  // console.log( "actual path ",businessProcessIntegrityData.actualContent.toString);
+           
+                  //out = verifyProcess(Bytes20.fromString(`${actualPath}`).bytes);
+
+               
+                  //actualContent.values.map((c) => UInt8.from(c.toField()))
+                  //`${actualContent}`
+
+
+                  out = verifyProcess( actualContent.values.map((c) => UInt8.from(c.toField())));
+
 
                   Provable.asProver(() => {
                      console.log( 'out ', out.toJSON()
                      );
                    });
+
+                  //out = verifyProcess(Bytes20.fromString(`${actualContent}`).bytes);
+
+                  //out = Bool(true);
+
+                  //console.log(' actual Path.. ', actualPath.toString(), " ############ Final Result...:", out.toJSON());
+                  //out.assertTrue(); // Removed the asserts and intermittent states.
+               
+               //out = Bool(true); // Removed the asserts and intermittent states.
+
+               /*
+
+               return new BusinessProcessIntegrityPublicOutput({
+                  //outputExpectedHash: Field(corporateRegistationToProveHash),
+                  //outputActualHash: Field(1),
+                  //creatorPublicKey: creatorPublicKey,
+                  businessProcessID: businessProcessIntegrityData.businessProcessID,
+                  out: out,
+                  //companyName: corporateRegistrationData.companyName,
+                  //companyID: corporateRegistrationData.companyID,
+                  //complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
+
+               });
+               */
+            //}  
+            /*      
+         }
+         catch (error) {
+            console.log(' out , ', out, ' catching error ... ' , error);
+            out = Bool(false);
+         }
+         */   
          return new BusinessProcessIntegrityPublicOutput({
             //outputExpectedHash: Field(corporateRegistationToProveHash),
             //outputActualHash: Field(1),

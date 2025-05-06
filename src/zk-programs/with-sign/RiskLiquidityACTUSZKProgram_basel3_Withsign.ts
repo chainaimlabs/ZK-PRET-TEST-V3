@@ -177,6 +177,8 @@ export const LiquidityRatioZkprogram = ZkProgram({
             let monthlyLCR = [];
 
             for (let month = 0; month < monthsCount.toBigInt(); month++) {
+            //for (let month = Field(1); month.lessThan(monthsCount).toBoolean(); month = month.add(1)) {   
+  
                // Update cumulative inflows and outflows
                cumulativeInflows = cumulativeInflows.add(cashInfl[month]);
                cumulativeOutflows = cumulativeOutflows.add(cashOutfl[month]);
