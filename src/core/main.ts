@@ -44,7 +44,7 @@ let expectedPath = "a(cb|bc)d(ef|f)g"
 console.log("expected path ", expectedPath)
 
 const txn1 = await Mina.transaction(senderAccount, async () => {
-   await zkAppInstance.verifyTrace(Bytes50.fromString(`${actualPath1}`));
+   await zkAppInstance.verifyTraceSCF(Bytes50.fromString(`${actualPath1}`));
 });
 await txn1.prove();
 await txn1.sign([senderKey]).send();
@@ -56,7 +56,7 @@ console.log('state after actual path trace1:', t1.toBoolean());
 // ----------------------------------------------------
 
 const txn2 = await Mina.transaction(senderAccount, async () => {
-   await zkAppInstance.verifyTrace(Bytes50.fromString(`${actualPath2}`));
+   await zkAppInstance.verifyTraceSCF(Bytes50.fromString(`${actualPath2}`));
 });
 await txn2.prove();
 await txn2.sign([senderKey]).send();
@@ -69,7 +69,7 @@ console.log('state after actual path trace2:', t2.toBoolean());
 // ----------------------------------------------------
 
 const txn3 = await Mina.transaction(senderAccount, async () => {
-   await zkAppInstance.verifyTrace(Bytes50.fromString(`${actualPath3}`));
+   await zkAppInstance.verifyTraceSCF(Bytes50.fromString(`${actualPath3}`));
 });
 await txn3.prove();
 await txn3.sign([senderKey]).send();
@@ -82,7 +82,7 @@ console.log('state after actual path trace3:', t3.toBoolean());
 // ----------------------------------------------------
 
 const txn4 = await Mina.transaction(senderAccount, async () => {
-   await zkAppInstance.verifyTrace(Bytes50.fromString(`${actualPath4}`));
+   await zkAppInstance.verifyTraceSCF(Bytes50.fromString(`${actualPath4}`));
 });
 await txn4.prove();
 await txn4.sign([senderKey]).send();

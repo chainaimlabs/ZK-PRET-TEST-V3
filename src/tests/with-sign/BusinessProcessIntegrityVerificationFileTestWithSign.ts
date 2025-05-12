@@ -1,5 +1,5 @@
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString, Poseidon, Signature } from 'o1js';
-import { BusinessProcessIntegrityZKProgram, BusinessProcessIntegrityData } from '../../zk-programs/with-sign/BusinessProcessIntegrityZKProgramWithSign.js'; //changed to with sign
+import { BusinessProcessIntegrityZKProgram, BusinessProcessIntegrityData, BusinessProcessIntegrityProof } from '../../zk-programs/with-sign/BusinessProcessIntegrityZKProgramWithSign.js'; //changed to with sign
 import { BusinessProcessIntegrityVerifierSmartContract } from '../../contracts/with-sign/BusinessProcessIntegrityVerifierSmartContractWithSign.js'; //changed to with sign
 
 import axios from 'axios';
@@ -11,7 +11,7 @@ import { join } from 'path';
 import { getPrivateKeyFor } from '../../core/OracleRegistry.js';
 import parseBpmn from '../../utils/parsebpmn.js';
 
-const [, , expectedBPMNFileName, actualBPMNFileName, outputFileName] = process.argv;
+const [, , businessProcessType,expectedBPMNFileName, actualBPMNFileName, outputFileName] = process.argv;
 
 console.log('Expected BPMN File Name:', expectedBPMNFileName);
 console.log('Actual BPMN File Name:', actualBPMNFileName);
@@ -113,7 +113,6 @@ async function main() {
 
    //console.log("Mina transaction is successful");
 
-
    const deployTxn = await Mina.transaction(
       deployerAccount,
       async () => {
@@ -144,6 +143,7 @@ async function main() {
       activeCompliance: CircuitString.fromString(parsedData["Active Compliance"]),
       */
       businessProcessID: Field(parsedData["BusinessProcess ID"] ?? 0),
+      businessProcessType: CircuitString.fromString(businessProcessType),
       expectedContent: CircuitString.fromString(expectedPath),
       // expectedContent: "ABC",
       actualContent: CircuitString.fromString(actualPath),
@@ -161,9 +161,25 @@ async function main() {
 
    //const exp=CircuitString.fromString("a(cb|bc)d(ef|f)g");
    //console.log("ActualContent****",complianceData.actualContent.toString())
-   const proof = await BusinessProcessIntegrityZKProgram.proveCompliance(Field(0), bpComplianceData, oracleSignature);
 
-   //console.log( 'Public Output', proof.publicOutput.businessProcessID.toJSON(), '  out ' , proof.publicOutput.out.toBoolean());
+   let proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);
+   
+   //let BusinessProcessIntegrityProof proof = BusinessProcessIntegrityProof ;
+
+   if(businessProcessType === 'STABLECOIN'){
+      proof = await BusinessProcessIntegrityZKProgram.proveComplianceSTABLECOIN(Field(0), bpComplianceData, oracleSignature);
+ 
+      
+   
+   }
+   else if (businessProcessType === 'SCF'){
+      proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);
+   }
+   else{
+      proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);
+   }
+
+      //console.log( 'Public Output', proof.publicOutput.businessProcessID.toJSON(), '  out ' , proof.publicOutput.out.toBoolean());
    //console.log("Before verification, Initial value of risk:",zkApp.risk.get().toJSON());
 
    // Verify proof
@@ -174,7 +190,6 @@ async function main() {
       }
    );
    // await txn.sign([zkAppKey]).send();
-
    const proof1 = await txn.prove();
    //await txn.prove();
 
@@ -185,16 +200,13 @@ async function main() {
    await txn.sign([senderKey]).send();
 
    console.log("$$$$$$$$$$$Final value of risk from client...$$$$$$$$$$$$$.:",zkApp.risk.get().toJSON());
-
    console.log('✅ Proof verified successfully!');
-
   } 
-  
+
   catch(error){
    console.log("$$$$$$$$$$$Final value of risk from client...$$$$$$$$$$$$$.:",zkApp.risk.get().toJSON());
    console.error('Error:', error);
   }
-
 }
 
 main().catch(err => {

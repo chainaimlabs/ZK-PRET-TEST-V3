@@ -3,7 +3,7 @@ import { Bool, Field, SmartContract, state, State, method, CircuitString, Struct
 import { BusinessProcessIntegrityProof } from '../../zk-programs/with-sign/BusinessProcessIntegrityZKProgramWithSign.js';
 import { BusinessProcessIntegrityZKProgram, BusinessProcessIntegrityData } from '../../zk-programs/with-sign/BusinessProcessIntegrityZKProgramWithSign.js';
 import { getPublicKeyFor } from '../../core/OracleRegistry.js';
-import { verifyProcess } from '../../contracts/bpmnCircuit.js';
+import { verifyProcessSCF,verifyProcessSTABLECOIN } from '../../contracts/bpmnCircuit.js';
 class Bytes80 extends Bytes(20) { }
 
 // Define the ComplianceData struct
@@ -21,7 +21,7 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
    // Method to verify BusinessProcessIntegrityDatacompliance passed in to the contract as a 
    // complianceData object which is verified thru the execution of the circuit on-chain and update state
    
-    @method async verifyComplianceWithParams(input: BusinessProcessIntegrityData, oracleSignature: Signature) {
+    @method async verifyComplianceWithParamsSCF(input: BusinessProcessIntegrityData, oracleSignature: Signature) {
       // Ensure the state of `risk` matches its current value
       this.risk.requireEquals(this.risk.get());
       const currentNum = this.risk.get();
@@ -37,7 +37,39 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
       const actualContent = input.actualContent;
       console.log('actual ||||||||||||||| content |||||||||||||||||', actualContent.length());
 
-         const out = verifyProcess( actualContent.values.map((c) => UInt8.from(c.toField())));
+         const out = verifyProcessSCF( actualContent.values.map((c) => UInt8.from(c.toField())));
+
+         Provable.asProver(() => {
+            console.log( 'out ', out.toJSON()
+            );
+          });
+
+      out.assertTrue();
+      // Update the state
+      const updatedNum = currentNum.sub(10);
+      this.risk.set(updatedNum);
+    }
+
+   // Method to verify BusinessProcessIntegrityDatacompliance passed in to the contract as a 
+   // complianceData object which is verified thru the execution of the circuit on-chain and update state
+   
+   @method async verifyComplianceWithParamsSTABLECOIN(input: BusinessProcessIntegrityData, oracleSignature: Signature) {
+      // Ensure the state of `risk` matches its current value
+      this.risk.requireEquals(this.risk.get());
+      const currentNum = this.risk.get();
+      // =================================== Oracle Signature Verification ===================================
+      const complianceDataHash = Poseidon.hash(BusinessProcessIntegrityData.toFields(input));
+      const registryPublicKey = getPublicKeyFor('BPMN');
+      const isValidSignature = oracleSignature.verify(
+         registryPublicKey,
+         [complianceDataHash]
+      );
+      isValidSignature.assertTrue();
+      
+      const actualContent = input.actualContent;
+      console.log('actual ||||||||||||||| content |||||||||||||||||', actualContent.length());
+
+         const out = verifyProcessSCF( actualContent.values.map((c) => UInt8.from(c.toField())));
 
          Provable.asProver(() => {
             console.log( 'out ', out.toJSON()
@@ -79,4 +111,5 @@ export class BusinessProcessIntegrityVerifierSmartContract extends SmartContract
           );
       */          
    }
+
 }
