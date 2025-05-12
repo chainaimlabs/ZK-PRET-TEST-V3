@@ -108,7 +108,7 @@ async function regexVerify(str: Bytes50, functionName: string): Promise<boolean>
 
 export async function verifyActual(): Promise<void> {
     try {
-        const data = await fs.promises.readFile('src/data.json', 'utf8');
+        const data = await fs.promises.readFile('src/core/data.json', 'utf8');
         const jsonData = JSON.parse(data);
         const requiredKeys = jsonData.requiredKeys;
         const d = jsonData.d;
@@ -133,7 +133,7 @@ export async function verifyActualFromFile(filename: string): Promise<any> {
 	
     try {
 
-        const data = await fs.promises.readFile('src/data.json', 'utf8');
+        const data = await fs.promises.readFile('src/core/data.json', 'utf8');
         const jsonData = JSON.parse(data);
         const requiredKeys = jsonData.requiredKeys;
         const d = jsonData.d;
@@ -170,7 +170,7 @@ export async function verifyActualFromJSONString(jsonString: string): Promise<an
         console.log("data file parsed... ");
 
         let out = Bool(true);
-        const data = await fs.promises.readFile('src/data.json', 'utf8');
+        const data = await fs.promises.readFile('src/core/data.json', 'utf8');
         const jsonData = JSON.parse(data);
 
        // console.log("jsonData... ",jsonData);
@@ -202,4 +202,4 @@ export async function verifyActualFromJSONString(jsonString: string): Promise<an
 }
 
 //verifyActual();
-verifyActualFromFile('actualBL2.json');
+verifyActualFromFile('src/data/scf/actualBL2.json'); 
