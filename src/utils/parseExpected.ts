@@ -137,7 +137,7 @@ export async function parseSwagger(): Promise<void> {
 
         const data = { requiredKeys, d };
 
-        fs.writeFile('src/data.json', JSON.stringify(data, null, 2), (err) => {
+        fs.writeFile('src/core/data.json', JSON.stringify(data, null, 2), (err) => {
             if (err) {
                 console.error('Error writing file', err);
             } else {
