@@ -162,18 +162,20 @@ async function main() {
    //const exp=CircuitString.fromString("a(cb|bc)d(ef|f)g");
    //console.log("ActualContent****",complianceData.actualContent.toString())
 
-   let proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);
+   //let proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);
    
+   let proof : BusinessProcessIntegrityProof;
    //let BusinessProcessIntegrityProof proof = BusinessProcessIntegrityProof ;
 
    if(businessProcessType === 'STABLECOIN'){
       proof = await BusinessProcessIntegrityZKProgram.proveComplianceSTABLECOIN(Field(0), bpComplianceData, oracleSignature);
  
-      
-   
    }
    else if (businessProcessType === 'SCF'){
       proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);
+   }
+   else if (businessProcessType === 'DVP'){
+      proof = await BusinessProcessIntegrityZKProgram.proveComplianceDVP(Field(0), bpComplianceData, oracleSignature);
    }
    else{
       proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);

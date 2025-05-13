@@ -1,4 +1,4 @@
-import { verifyProcessSCF,verifyProcessSTABLECOIN } from '../../contracts/bpmnCircuit.js';
+import { verifyProcessSCF,verifyProcessSTABLECOIN,verifyProcessDVP } from '../../contracts/bpmnCircuit.js';
 import {
    Field,
    Signature,
@@ -166,11 +166,60 @@ export const BusinessProcessIntegrityZKProgram = ZkProgram({
          // complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
       });
    }
+},
+proveComplianceDVP: { // Generates the public output
+   privateInputs: [
+      BusinessProcessIntegrityData,
+      Signature,
+      //Signature,
+      //PublicKey,
+   ],
+   async method(
+      businessProcessIntegrityToProve: Field,
+      businessProcessIntegrityData: BusinessProcessIntegrityData,
+      oracleSignature: Signature,
+      //creatorSignature: Signature,
+      //creatorPublicKey: PublicKey
+   ): Promise<BusinessProcessIntegrityPublicOutput> {
+         // =================================== Oracle Signature Verification ===================================
+         const complianceDataHash = Poseidon.hash(BusinessProcessIntegrityData.toFields(businessProcessIntegrityData));
+         const registryPublicKey = getPublicKeyFor('BPMN');
+         
+         // Currently this Registry is implemented as an example in MINA L!. But Eventually 
+         // This registry might be a overall trust registry, that could be centralized ( some univ)
+         //  or decentralized ( Like MIT NANDA ), for blockchain and AI agents looking for 
+         // the PKs, and can be from any blockchain ( multi chain tranaction) or X 509
+         // verified off-chain thru the ZK program oracle, and update the MINA L1 state.
+
+         const isValidSignature = oracleSignature.verify(
+            registryPublicKey,
+            [complianceDataHash]
+         );
+
+         isValidSignature.assertTrue();
+
+         const actualContent = businessProcessIntegrityData.actualContent;
+         const businessProcessType = businessProcessIntegrityData.businessProcessType;
+
+         console.log('actual ||||||||||||||| content |||||||||||||||||', actualContent.length() , "BP Type ", businessProcessType.length() );
+  
+            const out = verifyProcessDVP( actualContent.values.map((c) => UInt8.from(c.toField())));
+
+            Provable.asProver(() => {
+               console.log( ' business Process Type', businessProcessType.toString(),'actual content',actualContent.toString(), 'out ', out.toJSON())
+             });
+   return new BusinessProcessIntegrityPublicOutput({
+      //outputExpectedHash: Field(corporateRegistationToProveHash),
+      //outputActualHash: Field(1),
+      //creatorPublicKey: creatorPublicKey,
+      businessProcessID: businessProcessIntegrityData.businessProcessID,
+      out: out,
+      //companyName: corporateRegistrationData.companyName,
+      //companyID: corporateRegistrationData.companyID,
+      // complianceProof: CorporateRegistration.proveCompliance(Field(0),complianceData)
+   });
 }
-
-
-
-
+}
 
 } });
 
