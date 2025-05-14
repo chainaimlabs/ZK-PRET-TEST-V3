@@ -1,8 +1,8 @@
 import { Bool, Field, UInt8 } from 'o1js';
 
 
-// Command used: 'abc(def|edf|efd)gh(iu(vw|xy)|jklm(nu(vw|xy)|opqr(su(vw|xy)|ty)))' '--functionName' 'myRegexFunction' '--filePath' './src/bpmnCircuitDVP.ts'
-export function myRegexFunction(input: UInt8[]) {
+// Command used: 'abc(edf|def|efd)gh(jklm(opqr(ty|su(vw|xy))|nu(vw|xy))|iu(vw|xy))' '--functionName' 'verifyProcess' '--filePath' './src/bpmnCircuitDPV.ts'
+export function verifyProcessDVP(input: UInt8[]) {
 	const num_bytes = input.length;
 	let states: Bool[][] = Array.from({ length: num_bytes + 1 }, () => []);
 	let state_changed: Bool[] = Array.from({ length: num_bytes }, () => Bool(false));

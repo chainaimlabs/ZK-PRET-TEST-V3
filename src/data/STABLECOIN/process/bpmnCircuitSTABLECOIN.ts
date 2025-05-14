@@ -1,8 +1,8 @@
 import { Bool, Field, UInt8 } from 'o1js';
 
 
-// Command used: 'a(bc|cb)de(fu|ghij(ku|lm(nu|op(qu|rs(tu|vw|x)))))' '--functionName' 'myRegexFunction' '--filePath' './src/bpmnCircuitSTABLECOIN.ts'
-export function myRegexFunction(input: UInt8[]) {
+// Command used: 'a(cb|bc)de(ghij(lm(nu|op(qu|rs(x|tu|vw)))|ku)|fu)' '--functionName' 'verifyProcess' '--filePath' './src/bpmnCircuitSTABLECOIN.ts'
+export function verifyProcessSTABLECOIN(input: UInt8[]) {
 	const num_bytes = input.length;
 	let states: Bool[][] = Array.from({ length: num_bytes + 1 }, () => []);
 	let state_changed: Bool[] = Array.from({ length: num_bytes }, () => Bool(false));
