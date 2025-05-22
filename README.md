@@ -117,6 +117,27 @@ node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSig
 ```
 
 *   **Note:** For the `BusinessProcessIntegrityVerificationFileTestWithSign.js` test, you can replace `"bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn"` with any of the `*.bpmn` files located in the `ZK-PRET-DEV-V3\src\data\scf\process\` directory (Accepted or Rejected).
+*   
+
+## Business Process Prover for StableCoin Regulatory processes 
+
+The process model for the steps of the governance of the issuance processes, and the periodic auditing is modeled , and valid paths to compliance produces a proof, and non compliance does not produce a proof.
+
+
+## Passing Case 
+
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSign.js "STABLECOIN" src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-expected.bpmn src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-accepted1.bpmn result.txt
+Expected BPMN File Name: src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-expected.bpmn
+Actual BPMN File Name: src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-accepted1.bpmn
+
+## Failing Case 
+
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSign.js "STABLECOIN" src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-expected.bpmn src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-rejected1.bpmn result.txt
+Expected BPMN File Name: src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-expected.bpmn
+Actual BPMN File Name: src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-rejected1.bpmn
+
+
+
 
 ```bash
 node ./build/tests/with-sign/ComposedRecursive3LevelVerificationTestWithSign.js
