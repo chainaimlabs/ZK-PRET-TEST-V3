@@ -6,7 +6,7 @@ import { GLEIF } from '../../zk-programs/with-sign/GLEIFZKProgramWithSign.js';
 import { GLEIFVerifierSmartContract } from '../../contracts/with-sign/GLEIFVerifierSmartContractWithSign.js';
 import { GLEIFdeployerAccount, GLEIFsenderAccount, GLEIFdeployerKey, GLEIFsenderKey, getPrivateKeyFor } from '../../core/OracleRegistry.js';
 import { fetchGLEIFCompanyData } from './GLEIFUtils.js';
-import { getComplianceo1DataFromParsed } from './GLEIFo1.js';
+import { getGLEIFComplianceDataO1 } from './GLEIFo1.js';
 import {GLEIFComplianceDataO1} from './GLEIFo1.js'
 
 async function main() {
@@ -48,7 +48,7 @@ async function main() {
 //----------------------------------------------------------------------------------------------------------------
    // Use the first matching record
    // const record = parsedData.data[0];
-   const GLEIFcomplianceDataO1 = getComplianceo1DataFromParsed(parsedData);
+   const GLEIFcomplianceDataO1 = getGLEIFComplianceDataO1(parsedData);
 
    // Create GLEIF compliance data
   /* const GLEIFcomplianceData = new GLEIFComplianceData({

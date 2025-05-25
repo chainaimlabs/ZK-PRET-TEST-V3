@@ -125,7 +125,7 @@ export class GLEIFComplianceDataO1 extends Struct({
 }) { }
 
 
-export function getComplianceo1DataFromParsed(parsedData: any): GLEIFComplianceDataO1 {
+export function getGLEIFComplianceDataO1(parsedData: any): GLEIFComplianceDataO1 {
   if (!parsedData.data || parsedData.data.length === 0) {
     throw new Error('No records found in parsedData');
   }

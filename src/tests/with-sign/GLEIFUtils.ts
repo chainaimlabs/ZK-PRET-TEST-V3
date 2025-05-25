@@ -12,7 +12,7 @@ export async function fetchGLEIFCompanyData(companyName: string, typeOfNet: stri
     console.log('Type of Network:', typeOfNet);
     if (typeOfNet === process.env.BUILD_ENV) {
         console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++in sandbox++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-        BASEURL = process.env.GLEIF_URL_SANDBOX;
+        BASEURL = "https://api.gleif.org/api/v1/lei-records";
         if (!BASEURL) {
         throw new Error('BASEURL is not set in the environment variables.');
         }
@@ -23,7 +23,7 @@ export async function fetchGLEIFCompanyData(companyName: string, typeOfNet: stri
    } else if (typeOfNet === 'LOCAL') {
     //
         console.log('------------------------------------------------in mock--------------------------------------------------');
-        BASEURL = process.env.GLEIF_URL_MOCK;
+        BASEURL = "https://9a4d8990-c981-42fa-ace4-675ddec17321.mock.pstmn.io";
         if (!BASEURL) {
             throw new Error('BASEURL is not set in the environment variables.');
         }
@@ -34,7 +34,7 @@ export async function fetchGLEIFCompanyData(companyName: string, typeOfNet: stri
     }
     else{
         console.log('///////////////////////////////////////////////in prod//////////////////////////////////////////////');
-        BASEURL = process.env.GLEIF_URL_PROD;
+        BASEURL = "https://api.gleif.org/api/v1/lei-records";
         if (!BASEURL) {
             throw new Error('BASEURL is not set in the environment variables.');
         }
