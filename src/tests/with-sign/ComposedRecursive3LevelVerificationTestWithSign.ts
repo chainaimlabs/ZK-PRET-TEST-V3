@@ -5,7 +5,8 @@ import { ComplianceVerifierSC } from '../../contracts/with-sign/ComposedRecursiv
 // import { getPrivateKeyFor, Local } from '@/contracts/with-sign/OracleRegistry.js';
 import { getPrivateKeyFor, Local } from '../../core/OracleRegistry.js';
 import { EXIM, EXIMComplianceData } from '../../zk-programs/with-sign/EXIMZKProgramWithSign.js';
-import { GLEIF, GLEIFComplianceData } from '../../zk-programs/with-sign/GLEIFZKProgramWithSign.js';
+import { GLEIF } from '../../zk-programs/with-sign/GLEIFZKProgramWithSign.js';
+import {GLEIFComplianceDataO1 } from './GLEIFo1.js';
 import axios from 'axios';
 
 async function fullIntegrationTest() {
@@ -232,7 +233,7 @@ async function fullIntegrationTest() {
    parsedData = response.data;
 
    // Create GLEIF compliance data
-   const GLEIFcomplianceData = new GLEIFComplianceData({
+   const GLEIFcomplianceData = new GLEIFComplianceDataO1({
       type: CircuitString.fromString(parsedData.data[0].type || ''),
       id: CircuitString.fromString(parsedData.data[0].id || ''),
       lei: CircuitString.fromString(parsedData.data[0].attributes.lei || ''),
@@ -271,11 +272,11 @@ async function fullIntegrationTest() {
       // otherAddresses: CircuitString.fromString(parsedData.data[0].attributes.entity.otherAddresses?.map((addr: { addressLines: any[]; }) => addr.addressLines?.join(', ')).join('; ') || ''),
       // eventGroups: CircuitString.fromString(parsedData.data[0].attributes.entity.eventGroups?.join(', ') || ''),
 
-      initialRegistrationDate: CircuitString.fromString(parsedData.data[0].attributes.registration.initialRegistrationDate || ''),
-      lastUpdateDate: CircuitString.fromString(parsedData.data[0].attributes.registration.lastUpdateDate || ''),
-      activeComplianceStatusCode: Field(parsedData.data[0].attributes.registration.activeComplianceStatusCode || 0),
+      //initialRegistrationDate: CircuitString.fromString(parsedData.data[0].attributes.registration.initialRegistrationDate || ''),
+      //lastUpdateDate: CircuitString.fromString(parsedData.data[0].attributes.registration.lastUpdateDate || ''),
+      //activeComplianceStatusCode: Field(parsedData.data[0].attributes.registration.activeComplianceStatusCode || 0),
       registration_status: CircuitString.fromString(parsedData.data[0].attributes.registration.status || ''),
-      nextRenewalDate: CircuitString.fromString(parsedData.data[0].attributes.registration.nextRenewalDate || ''),
+      //nextRenewalDate: CircuitString.fromString(parsedData.data[0].attributes.registration.nextRenewalDate || ''),
       // managingLou: CircuitString.fromString(parsedData.data[0].attributes.registration.managingLou || ''),
       // corroborationLevel: CircuitString.fromString(parsedData.data[0].attributes.registration.corroborationLevel || ''),
       // validatedAt_id: CircuitString.fromString(parsedData.data[0].attributes.registration.validatedAt.id || ''),
@@ -310,7 +311,7 @@ async function fullIntegrationTest() {
 
    // =================================== Oracle Signature Generation ===================================
    // Create message hash
-   const gLeifComplianceDataHash = Poseidon.hash(GLEIFComplianceData.toFields(GLEIFcomplianceData));
+   const gLeifComplianceDataHash = Poseidon.hash(GLEIFComplianceDataO1.toFields(GLEIFcomplianceData));
 
    // Get oracle private key
    const registryPrivateKey = getPrivateKeyFor('GLEIF');
