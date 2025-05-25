@@ -8,8 +8,8 @@ import {
 //import { getPublicKeyFor } from './OracleRegistrySCF3Level.js';
 import { CorporateRegistrationProof, ComplianceData, CorporateRegistrationPublicOutput } from './CorporateRegistrationZKProgramWithSign.js';
 import { EXIMProof, EXIMComplianceData, EXIMPublicOutput } from './EXIMZKProgramWithSign.js';
-import { GLEIFProof, GLEIFComplianceData, GLEIFPublicOutput } from './GLEIFZKProgramWithSign.js';
-//
+import { GLEIFProof, GLEIFPublicOutput } from './GLEIFZKProgramWithSign.js';
+import {GLEIFComplianceDataO1} from '../../tests/with-sign/GLEIFo1.js';
 
 export class CompliancePublicOutput extends Struct({
    companyName: CircuitString,

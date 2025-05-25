@@ -82,15 +82,15 @@ export const CorporateRegistration = ZkProgram({
             );
             isValidSignature.assertTrue();
             // =================================== Compliance Status Verification ===================================
-            // const expectedActiveComplianceHash = CircuitString.fromString("Active").hash();
-            // const activeComplianceHash = corporateRegistrationData.activeCompliance.hash();
-            // activeComplianceHash.assertEquals(expectedActiveComplianceHash);
+            const expectedActiveComplianceHash = CircuitString.fromString("Active").hash();
+            const activeComplianceHash = corporateRegistrationData.activeCompliance.hash();
+            activeComplianceHash.assertEquals(expectedActiveComplianceHash);
 
-            const activeStatusCode = Field.from(1);
+            /*const activeStatusCode = Field.from(1);
             const inactiveStatusCode = Field.from(0);
 
             corporateRegistrationData.activeComplianceStatusCode.assertEquals(activeStatusCode);
-            corporateRegistrationData.activeComplianceStatusCode.assertNotEquals(inactiveStatusCode);
+            corporateRegistrationData.activeComplianceStatusCode.assertNotEquals(inactiveStatusCode);*/
 
 
             return new CorporateRegistrationPublicOutput({

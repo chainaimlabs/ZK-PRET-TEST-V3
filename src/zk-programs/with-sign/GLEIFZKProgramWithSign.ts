@@ -13,9 +13,9 @@ import {
    Poseidon,
 } from 'o1js';
 import { getPublicKeyFor } from '../../core/OracleRegistry.js';
-
+import { GLEIFComplianceDataO1 } from '../../tests/with-sign/GLEIFo1.js';
 // =================================== Compliance Data Definition ===================================
-export class GLEIFComplianceData extends Struct({
+/*export class GLEIFComplianceDataO1 extends Struct({
    type: CircuitString,
    id: CircuitString,
    lei: CircuitString,
@@ -47,11 +47,11 @@ export class GLEIFComplianceData extends Struct({
    // subCategory: CircuitString,
    // otherAddresses: CircuitString,
    // eventGroups: CircuitString,
-   initialRegistrationDate: CircuitString,
-   lastUpdateDate: CircuitString,
-   activeComplianceStatusCode: Field,
+   //initialRegistrationDate: CircuitString,
+   //lastUpdateDate: CircuitString,
+   //activeComplianceStatusCode: Field,
    registration_status: CircuitString,
-   nextRenewalDate: CircuitString,
+   //nextRenewalDate: CircuitString,
    // managingLou: CircuitString,
    // corroborationLevel: CircuitString,
    // validatedAt_id: CircuitString,
@@ -74,7 +74,7 @@ export class GLEIFComplianceData extends Struct({
    // ultimate_parent_lei_record: CircuitString,
    // isins_related: CircuitString,
    // links_self: CircuitString
-}) { }
+}) { }*/
 
 // ========================== Public Output Structure Definition ========================================
 export class GLEIFPublicOutput extends Struct({
@@ -84,7 +84,7 @@ export class GLEIFPublicOutput extends Struct({
 
 
 
-function isValidObject(GLEIFData: GLEIFComplianceData) {
+function isValidObject(GLEIFData: GLEIFComplianceDataO1) {
 
    //console.log('  GLEIFData ...  id .. ', GLEIFData.id, '  .. reg status ..', GLEIFData.registration_status);
 
@@ -111,12 +111,12 @@ export const GLEIF = ZkProgram({
    methods: {
       proveCompliance: { // Generates the public output
          privateInputs: [
-            GLEIFComplianceData,
+            GLEIFComplianceDataO1,
             Signature // Oracle Signature
          ],
          async method(
             GLEIFToProve: Field,
-            GLEIFData: GLEIFComplianceData,
+            GLEIFData: GLEIFComplianceDataO1,
             oracleSignature: Signature // Oracle Signature
          ): Promise<GLEIFPublicOutput> {
 
@@ -126,7 +126,7 @@ export const GLEIF = ZkProgram({
 
                // =================================== Oracle Signature Verification ===================================
                // Hash the compliance data
-               const complianceDataHash = Poseidon.hash(GLEIFComplianceData.toFields(GLEIFData));
+               const complianceDataHash = Poseidon.hash(GLEIFComplianceDataO1.toFields(GLEIFData));
 
                // Get the oracle's public key
                const registryPublicKey = getPublicKeyFor('GLEIF');
@@ -164,7 +164,7 @@ export const GLEIF = ZkProgram({
                   */
 
 
-                  const activeComplianceHash = CircuitString.fromString("Active").hash();
+                  const activeComplianceHash = CircuitString.fromString("ACTIVE").hash();
                   const inactiveComplianceHash = CircuitString.fromString("Inactive").hash();
                   const currentStatusHash = GLEIFData.registration_status.hash();
 
