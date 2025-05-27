@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString } from 'o1js';
 import { BusinessStandardDataIntegrityZKProgram, BusinessStandardDataIntegrityComplianceData, BusinessStandardDataIntegrityProof } from '../../zk-programs/with-sign/BusinessStandardDataIntegrityZKProgram.js';
 import { BusinessStandardDataIntegrityVerificationSmartContract } from '../../contracts/with-sign/BusinessStandardDataIntegrityVerificationSmartContract.js';
+import { createComplianceData } from '../../tests/with-sign/BSDIo1.js';
 
 
 import axios from 'axios';
@@ -62,56 +63,60 @@ async function main() {
    await deployTxn.sign([deployerKey, zkAppKey]).send();
    console.log("deployTxn signed successfully");
    console.log("Fetching compliance data...");
-   const BASEURL = "https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io";
-   const companyname = "vernon_dgft"
-   const response = await axios.get(`${BASEURL}/${companyname}`); // Replace with your mock API endpoint
-   const parsedData = response.data;
 
-   //console.log(parsedData);
-   //console.log("HI");
+   // const BASEURL = "https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io";
+   // const companyname = "vernon_dgft"
+   // const response = await axios.get(`${BASEURL}/${companyname}`); // Replace with your mock API endpoint
+   // const parsedData = response.data;
 
-   //console.log(parsedData["iec"]);
-   //console.log(parsedData["iecStatus"]);
+   // //console.log(parsedData);
+   // //console.log("HI");
 
-   const BusinessStandardDataIntegritycomplianceData = new BusinessStandardDataIntegrityComplianceData({
-      // iec: CircuitString.fromString(parsedData["iec"] || ''),
-      // entityName: CircuitString.fromString(parsedData["entityName"] || ''),
-      // addressLine1: CircuitString.fromString(parsedData["addressLine1"] || ''),
-      // addressLine2: CircuitString.fromString(parsedData["addressLine2"] || ''),
-      // city: CircuitString.fromString(parsedData["city"] || ''),
-      // state: CircuitString.fromString(parsedData["state"] || ''),
-      // pin: Field(parsedData["pin"] ?? 0),
-      // contactNo: Field(parsedData["contactNo"] ?? 0),
-      // email: CircuitString.fromString(parsedData["email"] || ''),
-      // iecIssueDate: CircuitString.fromString(parsedData["iecIssueDate"] || ''),
-      // exporterType: Field(parsedData["exporterType"] ?? 0),
-      // pan: CircuitString.fromString(parsedData["pan"] || ''),
-      // iecStatus: Field(parsedData["iecStatus"] ?? 0),
-      // starStatus: Field(parsedData["starStatus"] ?? 0),
-      // iecModificationDate: CircuitString.fromString(parsedData["iecModificationDate"] || ''),
-      // dataAsOn: CircuitString.fromString(parsedData["dataAsOn"] || ''),
-      // natureOfConcern: Field(parsedData["natureOfConcern"] ?? 0),
+   // //console.log(parsedData["iec"]);
+   // //console.log(parsedData["iecStatus"]);
 
-      // // Branch Data (from branches[0])
-      // branchCode: Field(parsedData.branches?.[0]?.branchCode ?? 0),
-      // badd1: CircuitString.fromString(parsedData.branches?.[0]?.badd1 || ''),
-      // badd2: CircuitString.fromString(parsedData.branches?.[0]?.badd2 || ''),
-      // branchCity: CircuitString.fromString(parsedData.branches?.[0]?.city || ''),
-      // branchState: CircuitString.fromString(parsedData.branches?.[0]?.state || ''),
-      // branchPin: Field(parsedData.branches?.[0]?.pin ?? 0),
 
-      // // Director Data (from directors)
-      // director1Name: CircuitString.fromString(parsedData.directors?.[0]?.name || ''),
-      // director2Name: CircuitString.fromString(parsedData.directors?.[1]?.name || ''),
-      businessStandardDataIntegrityEvaluationId: Field(parsedData["BusinessStandardDataIntegrityEvaluation ID"] ?? 0),
-      expectedContent: CircuitString.fromString(expectedContent),
-      //actualContent: CircuitString.fromString(actualContent),
-      actualContent: evalBLJson,
-      //actualContentFilename:'actualBL1.json',
-      actualContentFilename: evalBLJsonFileName,
+   // const BusinessStandardDataIntegritycomplianceData = new BusinessStandardDataIntegrityComplianceData({
+   //    // iec: CircuitString.fromString(parsedData["iec"] || ''),
+   //    // entityName: CircuitString.fromString(parsedData["entityName"] || ''),
+   //    // addressLine1: CircuitString.fromString(parsedData["addressLine1"] || ''),
+   //    // addressLine2: CircuitString.fromString(parsedData["addressLine2"] || ''),
+   //    // city: CircuitString.fromString(parsedData["city"] || ''),
+   //    // state: CircuitString.fromString(parsedData["state"] || ''),
+   //    // pin: Field(parsedData["pin"] ?? 0),
+   //    // contactNo: Field(parsedData["contactNo"] ?? 0),
+   //    // email: CircuitString.fromString(parsedData["email"] || ''),
+   //    // iecIssueDate: CircuitString.fromString(parsedData["iecIssueDate"] || ''),
+   //    // exporterType: Field(parsedData["exporterType"] ?? 0),
+   //    // pan: CircuitString.fromString(parsedData["pan"] || ''),
+   //    // iecStatus: Field(parsedData["iecStatus"] ?? 0),
+   //    // starStatus: Field(parsedData["starStatus"] ?? 0),
+   //    // iecModificationDate: CircuitString.fromString(parsedData["iecModificationDate"] || ''),
+   //    // dataAsOn: CircuitString.fromString(parsedData["dataAsOn"] || ''),
+   //    // natureOfConcern: Field(parsedData["natureOfConcern"] ?? 0),
 
-   });
+   //    // // Branch Data (from branches[0])
+   //    // branchCode: Field(parsedData.branches?.[0]?.branchCode ?? 0),
+   //    // badd1: CircuitString.fromString(parsedData.branches?.[0]?.badd1 || ''),
+   //    // badd2: CircuitString.fromString(parsedData.branches?.[0]?.badd2 || ''),
+   //    // branchCity: CircuitString.fromString(parsedData.branches?.[0]?.city || ''),
+   //    // branchState: CircuitString.fromString(parsedData.branches?.[0]?.state || ''),
+   //    // branchPin: Field(parsedData.branches?.[0]?.pin ?? 0),
 
+   //    // // Director Data (from directors)
+   //    // director1Name: CircuitString.fromString(parsedData.directors?.[0]?.name || ''),
+   //    // director2Name: CircuitString.fromString(parsedData.directors?.[1]?.name || ''),
+   //    businessStandardDataIntegrityEvaluationId: Field(0),
+   //    expectedContent: CircuitString.fromString(expectedContent),
+   //    //actualContent: CircuitString.fromString(actualContent),
+   //    actualContent: evalBLJson,
+   //    //actualContentFilename:'actualBL1.json',
+   //    actualContentFilename: evalBLJsonFileName,
+
+   // });
+
+
+   const BusinessStandardDataIntegritycomplianceData = createComplianceData(evalBLJsonFileName, evalBLJson);
 
    const proof = await BusinessStandardDataIntegrityZKProgram.proveCompliance(Field(1), BusinessStandardDataIntegritycomplianceData)
 
