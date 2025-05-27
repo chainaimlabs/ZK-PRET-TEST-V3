@@ -8,16 +8,21 @@ import { BusinessStandardDataIntegrityVerificationSmartContract } from '../../co
 import axios from 'axios';
 
 async function main() {
-
    const expectedContent = "a(cb|bc)d(ef|f)g";
-   //const actualPath = process.argv[3];
-   const actualContent = "abcdfg";
+   
+   // Get BL JSON file path from command line argument
+   const evalBLJsonFileName = process.argv[2];
 
-   const evalBLJsonFileName = 'src/data/scf/actualBL1.json';
+   if (!evalBLJsonFileName) {
+      console.error('Please provide the BL JSON file path as an argument');
+      process.exit(1);
+   }
 
+   // Read and parse the BL JSON file
    const evalBLJson = JSON.parse(await fs.promises.readFile(evalBLJsonFileName, 'utf8'));
 
-   console.log("eval BL JSON  in verification test ... ...", evalBLJson)
+   console.log("Evaluating BL JSON from file:", evalBLJsonFileName);
+   console.log("eval BL JSON in verification test:", evalBLJson);
 
    const useProof = false;
 
