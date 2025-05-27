@@ -19,31 +19,36 @@ import {
 import axios from 'axios';
 //import {Oracle_Public_key} from './oracle_mca.js';//
 import { getPublicKeyFor } from '../../core/OracleRegistry.js';
+import { ComplianceData } from '../../tests/with-sign/CorporateRegistrationo1.js';
+
 // =================================== Compliance Data Definition ===================================
+
+
+/*
 export class ComplianceData extends Struct({
    companyID: CircuitString,          // CIN
    companyName: CircuitString,        // Company Name
-   roc: CircuitString,                // ROC
-   registrationNumber: Field,         // Registration Number
-   incorporationDate: CircuitString,  // Incorporation Date
-   email: CircuitString,              // Email
-   corporateAddress: CircuitString,   // Corporate Address
-   listed: Field,                     // Listed (boolean as Field)
-   companyType: CircuitString,        // Company Type
-   companyCategory: CircuitString, // Company Category
-   companySubcategory: CircuitString, // Company Subcategory
-   companyStatus: CircuitString,      // Company Status
-   authorizedCapital: Field,          // Authorized Capital
-   paidUpCapital: Field,          // Paid-up Capital
-   lastAGMDate: CircuitString,        // Last AGM Date
-   balanceSheetDate: CircuitString, // Balance Sheet Date
-   activeComplianceStatusCode: Field,
+   // roc: CircuitString,                // ROC
+   // registrationNumber: Field,         // Registration Number
+   // incorporationDate: CircuitString,  // Incorporation Date
+   // email: CircuitString,              // Email
+   // corporateAddress: CircuitString,   // Corporate Address
+   // listed: Field,                     // Listed (boolean as Field)
+   // companyType: CircuitString,        // Company Type
+   // companyCategory: CircuitString, // Company Category
+   // companySubcategory: CircuitString, // Company Subcategory
+   // companyStatus: CircuitString,      // Company Status
+   // authorizedCapital: Field,          // Authorized Capital
+   // paidUpCapital: Field,          // Paid-up Capital
+   // lastAGMDate: CircuitString,        // Last AGM Date
+   // balanceSheetDate: CircuitString, // Balance Sheet Date
+   // activeComplianceStatusCode: Field,
    activeCompliance: CircuitString,   // Active Compliance
-   companyActivity: CircuitString,    // Company Activity
-   jurisdiction: CircuitString,       // Jurisdiction
-   regionalDirector: CircuitString,   // Regional Director
-   mcaID: Field,                      // MCA ID
-}) { }
+   // companyActivity: CircuitString,    // Company Activity
+   // jurisdiction: CircuitString,       // Jurisdiction
+   // regionalDirector: CircuitString,   // Regional Director
+   // mcaID: Field,                      // MCA ID
+}) { }*/
 
 // ========================== Public Output Structure Definition ========================================
 export class CorporateRegistrationPublicOutput extends Struct({
