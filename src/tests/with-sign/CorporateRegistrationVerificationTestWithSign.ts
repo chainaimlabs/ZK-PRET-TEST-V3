@@ -1,12 +1,15 @@
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString, Poseidon, Signature } from 'o1js';
-import { CorporateRegistration, ComplianceData } from '../../zk-programs/with-sign/CorporateRegistrationZKProgramWithSign.js';
+import { CorporateRegistration } from '../../zk-programs/with-sign/CorporateRegistrationZKProgramWithSign.js';
 import { CorporateRegistrationVerifierSmartContract } from '../../contracts/with-sign/CorporateRegistrationVerifierSmartContractWithSign.js';
 
 
 import { MCAdeployerAccount, MCAsenderAccount, MCAdeployerKey, MCAsenderKey, getPrivateKeyFor } from '../../core/OracleRegistry.js';
 
-//
-import axios from 'axios';
+import { fetchCorporateRegistrationData } from './CorporateRegistrationUtils.js';
+import { getCorpRegComplianceData } from './CorporateRegistrationo1.js';
+import { ComplianceData } from '../../tests/with-sign/CorporateRegistrationo1.js';
+
+//import axios from 'axios';
 
 async function main() {
 
@@ -34,11 +37,18 @@ async function main() {
 
    console.log("deployTxn signed successfully");
 
-   //const response = await axios.get('https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io/vernon_mca');
-   const response = await axios.get('https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io/zenova_mca');
-   const parsedData = response.data;
+   // //const response = await axios.get('https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io/vernon_mca');
+   // const response = await axios.get('https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io/zenova_mca');
+   // const parsedData = response.data;
 
-   const complianceData = new ComplianceData({
+   const cin = process.argv[2];
+   const typeofnet = process.argv[3];
+
+   const parsedData = await fetchCorporateRegistrationData(cin, typeofnet);
+   
+   const complianceData = getCorpRegComplianceData(parsedData, typeofnet);
+   
+   /*const complianceData = new ComplianceData({
       companyID: CircuitString.fromString(parsedData["CIN"] || ''),
       companyName: CircuitString.fromString(parsedData["Company Name"] || ''),
       roc: CircuitString.fromString(parsedData["ROC"] || ''),
@@ -61,7 +71,7 @@ async function main() {
       jurisdiction: CircuitString.fromString(parsedData["Jurisdiction"] || ''),
       regionalDirector: CircuitString.fromString(parsedData["Regional Director"] || ''),
       mcaID: Field(parsedData["MCA ID"] ?? 0),
-   });
+   });*/
 
    // =================================== Oracle Signature Generation ===================================
    // Create message hash

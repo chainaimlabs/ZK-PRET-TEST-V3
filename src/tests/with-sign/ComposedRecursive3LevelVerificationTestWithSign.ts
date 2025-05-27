@@ -1,12 +1,15 @@
 import { Field, CircuitString, Mina, PrivateKey, AccountUpdate, Poseidon, Signature } from 'o1js';
 import { ComposedCompliance, ComposedProof } from '../../zk-programs/with-sign/Composed3levelZKProgramWithSign.js';
-import { CorporateRegistration, ComplianceData } from '../../zk-programs/with-sign/CorporateRegistrationZKProgramWithSign.js';
+import { CorporateRegistration} from '../../zk-programs/with-sign/CorporateRegistrationZKProgramWithSign.js';
 import { ComplianceVerifierSC } from '../../contracts/with-sign/ComposedRecursive3LevelSmartContractWithSign.js';
 // import { getPrivateKeyFor, Local } from '@/contracts/with-sign/OracleRegistry.js';
 import { getPrivateKeyFor, Local } from '../../core/OracleRegistry.js';
-import { EXIM, EXIMComplianceData } from '../../zk-programs/with-sign/EXIMZKProgramWithSign.js';
+import { EXIM } from '../../zk-programs/with-sign/EXIMZKProgramWithSign.js';
 import { GLEIF } from '../../zk-programs/with-sign/GLEIFZKProgramWithSign.js';
 import {GLEIFComplianceDataO1 } from './GLEIFo1.js';
+import { EXIMComplianceDataO1 } from './EXIMo1.js';
+import { ComplianceData } from './CorporateRegistrationo1.js';
+
 import axios from 'axios';
 
 async function fullIntegrationTest() {
@@ -43,26 +46,26 @@ async function fullIntegrationTest() {
    const mcaData = new ComplianceData({
       companyID: CircuitString.fromString(parsedData["CIN"] || ''),
       companyName: CircuitString.fromString(parsedData["Company Name"] || ''),
-      roc: CircuitString.fromString(parsedData["ROC"] || ''),
-      registrationNumber: Field(parsedData["Registration Number"] ?? 0),
-      incorporationDate: CircuitString.fromString(parsedData["Incorporation Date"] || ''),
-      email: CircuitString.fromString(parsedData["Email"] || ''),
-      corporateAddress: CircuitString.fromString(parsedData["Corporate Address"] || ''),
-      listed: Field(parsedData["Listed"] ? 1 : 0),
-      companyType: CircuitString.fromString(parsedData["Company Type"] || ''),
-      companyCategory: CircuitString.fromString(parsedData["Company Category"] || ''),
-      companySubcategory: CircuitString.fromString(parsedData["Company Subcategory"] || ''),
-      companyStatus: CircuitString.fromString(parsedData["Company Status"]),
-      authorizedCapital: Field(parsedData["Authorized Capital"] ?? 0),
-      paidUpCapital: Field(parsedData["Paid-up Capital"] ?? 0),
-      lastAGMDate: CircuitString.fromString(parsedData["Last AGM Date"] || ''),
-      balanceSheetDate: CircuitString.fromString(parsedData["Balance Sheet Date"] || ''),
-      activeComplianceStatusCode: Field(parsedData["activeComplianceStatusCode"] ?? 0),
+      // roc: CircuitString.fromString(parsedData["ROC"] || ''),
+      // registrationNumber: Field(parsedData["Registration Number"] ?? 0),
+      // incorporationDate: CircuitString.fromString(parsedData["Incorporation Date"] || ''),
+      // email: CircuitString.fromString(parsedData["Email"] || ''),
+      // corporateAddress: CircuitString.fromString(parsedData["Corporate Address"] || ''),
+      // listed: Field(parsedData["Listed"] ? 1 : 0),
+      // companyType: CircuitString.fromString(parsedData["Company Type"] || ''),
+      // companyCategory: CircuitString.fromString(parsedData["Company Category"] || ''),
+      // companySubcategory: CircuitString.fromString(parsedData["Company Subcategory"] || ''),
+      // companyStatus: CircuitString.fromString(parsedData["Company Status"]),
+      // authorizedCapital: Field(parsedData["Authorized Capital"] ?? 0),
+      // paidUpCapital: Field(parsedData["Paid-up Capital"] ?? 0),
+      // lastAGMDate: CircuitString.fromString(parsedData["Last AGM Date"] || ''),
+      // balanceSheetDate: CircuitString.fromString(parsedData["Balance Sheet Date"] || ''),
+      // activeComplianceStatusCode: Field(parsedData["activeComplianceStatusCode"] ?? 0),
       activeCompliance: CircuitString.fromString(parsedData["Active Compliance"]),
-      companyActivity: CircuitString.fromString(parsedData["Company Activity"] || ''),
-      jurisdiction: CircuitString.fromString(parsedData["Jurisdiction"] || ''),
-      regionalDirector: CircuitString.fromString(parsedData["Regional Director"] || ''),
-      mcaID: Field(parsedData["MCA ID"] ?? 0),
+      // companyActivity: CircuitString.fromString(parsedData["Company Activity"] || ''),
+      // jurisdiction: CircuitString.fromString(parsedData["Jurisdiction"] || ''),
+      // regionalDirector: CircuitString.fromString(parsedData["Regional Director"] || ''),
+      // mcaID: Field(parsedData["MCA ID"] ?? 0),
    });
    // const mcaSig = getAuthorityKeys('MCA').privateKey.sign([Poseidon.hash(mcaData.toFields())]);
    const mcaPrivateKey = getPrivateKeyFor('MCA');
@@ -88,42 +91,42 @@ async function fullIntegrationTest() {
    response = await axios.get(`${BASEURL}/${companyname}`);
    parsedData = response.data;
    console.log("exim:", parsedData);
-   const eximData = new EXIMComplianceData({
+   const eximData = new EXIMComplianceDataO1({
       //const complianceData = new EXIMComplianceData({
       iec: CircuitString.fromString(parsedData["iec"] || ''),
       entityName: CircuitString.fromString(parsedData["entityName"] || ''),
-      addressLine1: CircuitString.fromString(parsedData["addressLine1"] || ''),
-      addressLine2: CircuitString.fromString(parsedData["addressLine2"] || ''),
-      city: CircuitString.fromString(parsedData["city"] || ''),
-      state: CircuitString.fromString(parsedData["state"] || ''),
-      pin: Field(parsedData["pin"] ?? 0),
-      contactNo: Field(parsedData["contactNo"] ?? 0),
-      email: CircuitString.fromString(parsedData["email"] || ''),
-      iecIssueDate: CircuitString.fromString(parsedData["iecIssueDate"] || ''),
-      exporterType: Field(parsedData["exporterType"] ?? 0),
-      pan: CircuitString.fromString(parsedData["pan"] || ''),
-      iecStatus: Field(parsedData["iecStatus"] ?? 0),
-      activeComplianceStatusCode: Field(parsedData["activeComplianceStatusCode"] ?? 0),
-      starStatus: Field(parsedData["starStatus"] ?? 0),
-      iecModificationDate: CircuitString.fromString(parsedData["iecModificationDate"] || ''),
-      dataAsOn: CircuitString.fromString(parsedData["dataAsOn"] || ''),
-      natureOfConcern: Field(parsedData["natureOfConcern"] ?? 0),
+      // addressLine1: CircuitString.fromString(parsedData["addressLine1"] || ''),
+      // addressLine2: CircuitString.fromString(parsedData["addressLine2"] || ''),
+      // city: CircuitString.fromString(parsedData["city"] || ''),
+      // state: CircuitString.fromString(parsedData["state"] || ''),
+      // pin: Field(parsedData["pin"] ?? 0),
+      // contactNo: Field(parsedData["contactNo"] ?? 0),
+      // email: CircuitString.fromString(parsedData["email"] || ''),
+      // iecIssueDate: CircuitString.fromString(parsedData["iecIssueDate"] || ''),
+      // exporterType: Field(parsedData["exporterType"] ?? 0),
+      // pan: CircuitString.fromString(parsedData["pan"] || ''),
+         iecStatus: Field(parsedData["iecStatus"] ?? 0),
+      // activeComplianceStatusCode: Field(parsedData["activeComplianceStatusCode"] ?? 0),
+      // starStatus: Field(parsedData["starStatus"] ?? 0),
+      // iecModificationDate: CircuitString.fromString(parsedData["iecModificationDate"] || ''),
+      // dataAsOn: CircuitString.fromString(parsedData["dataAsOn"] || ''),
+      // natureOfConcern: Field(parsedData["natureOfConcern"] ?? 0),
 
-      // Branch Data (from branches[0])
-      branchCode: Field(parsedData.branches?.[0]?.branchCode ?? 0),
-      badd1: CircuitString.fromString(parsedData.branches?.[0]?.badd1 || ''),
-      badd2: CircuitString.fromString(parsedData.branches?.[0]?.badd2 || ''),
-      branchCity: CircuitString.fromString(parsedData.branches?.[0]?.city || ''),
-      branchState: CircuitString.fromString(parsedData.branches?.[0]?.state || ''),
-      branchPin: Field(parsedData.branches?.[0]?.pin ?? 0),
+      // // Branch Data (from branches[0])
+      // branchCode: Field(parsedData.branches?.[0]?.branchCode ?? 0),
+      // badd1: CircuitString.fromString(parsedData.branches?.[0]?.badd1 || ''),
+      // badd2: CircuitString.fromString(parsedData.branches?.[0]?.badd2 || ''),
+      // branchCity: CircuitString.fromString(parsedData.branches?.[0]?.city || ''),
+      // branchState: CircuitString.fromString(parsedData.branches?.[0]?.state || ''),
+      // branchPin: Field(parsedData.branches?.[0]?.pin ?? 0),
 
-      // Director Data (from directors)
-      director1Name: CircuitString.fromString(parsedData.directors?.[0]?.name || ''),
-      director2Name: CircuitString.fromString(parsedData.directors?.[1]?.name || ''),
+      // // Director Data (from directors)
+      // director1Name: CircuitString.fromString(parsedData.directors?.[0]?.name || ''),
+      // director2Name: CircuitString.fromString(parsedData.directors?.[1]?.name || ''),
    });
 
    const eximPrivateKey = getPrivateKeyFor('EXIM');
-   const eximDataHash = Poseidon.hash(EXIMComplianceData.toFields(eximData));
+   const eximDataHash = Poseidon.hash(EXIMComplianceDataO1.toFields(eximData));
    const eximSig = Signature.create(eximPrivateKey, [eximDataHash]);
    const eximProof = await EXIM.proveCompliance(Field(0), eximData, eximSig);
    console.log("EXIM Proof:", eximProof);

@@ -1,8 +1,15 @@
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString, Poseidon, Signature } from 'o1js';
-import { EXIM, EXIMComplianceData } from '../../zk-programs/with-sign/EXIMZKProgramWithSign.js';
+import { EXIM} from '../../zk-programs/with-sign/EXIMZKProgramWithSign.js';
 import { EXIMVerifierSmartContract } from '../../contracts/with-sign/EXIMVerifierSmartContractWithSign.js';
 
 import axios from 'axios';
+
+
+import { fetchEXIMCompanyData } from './EXIMUtils.js';
+import { getEXIMComplianceDataO1 } from './EXIMo1.js';
+import {EXIMComplianceDataO1} from './EXIMo1.js'
+
+
 
 import { EXIMdeployerAccount, EXIMsenderAccount, EXIMdeployerKey, EXIMsenderKey, getPrivateKeyFor, Local } from '../../core/OracleRegistry.js';
 async function main() {
@@ -25,7 +32,7 @@ async function main() {
    );
    await deployTxn.sign([EXIMdeployerKey, zkAppKey]).send();
    console.log("Deploy transaction signed successfully");
-
+/*
    // Fetch compliance data
    const BASEURL = "https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io";
    // <<<<<<< HEAD
@@ -37,8 +44,32 @@ async function main() {
    //   const companyname = "vernon_dgft";
    // >>>>>>> 3edd1b2332aabbf0b494f31fd1d084129582c843
    const response = await axios.get(`${BASEURL}/${companyname}`);
-   const parsedData = response.data;
+   const parsedData = response.data;*/
+   
 
+
+
+      const companyName = process.argv[2];
+      let typeOfNet = process.argv[3];
+      console.log('Company Name:', companyName);
+   
+      // Fetch company data using the utility function
+      let parsedData;
+      try {
+        parsedData = await fetchEXIMCompanyData(companyName,typeOfNet);
+      } catch (err: any) {
+        console.error(err.message);
+        process.exit(1);
+      }
+   
+   //----------------------------------------------------------------------------------------------------------------
+      // Use the first matching record
+      // const record = parsedData.data[0];
+      const EXIMComplianceDatao1 = getEXIMComplianceDataO1(parsedData);
+   
+
+
+/*
    // Create EXIM compliance data
    const EXIMcomplianceData = new EXIMComplianceData({
       //const complianceData = new EXIMComplianceData({
@@ -72,11 +103,11 @@ async function main() {
       // Director Data (from directors)
       director1Name: CircuitString.fromString(parsedData.directors?.[0]?.name || ''),
       director2Name: CircuitString.fromString(parsedData.directors?.[1]?.name || ''),
-   });
+   });*/
 
    // =================================== Oracle Signature Generation ===================================
    // Create message hash
-   const complianceDataHash = Poseidon.hash(EXIMComplianceData.toFields(EXIMcomplianceData));
+   const complianceDataHash = Poseidon.hash(EXIMComplianceDataO1.toFields(EXIMComplianceDatao1));
 
    // Get oracle private key
    const registryPrivateKey = getPrivateKeyFor('EXIM');
@@ -85,9 +116,9 @@ async function main() {
    const oracleSignature = Signature.create(registryPrivateKey, [complianceDataHash]);
 
    // =================================== Generate Proof ===================================
-   const proof = await EXIM.proveCompliance(Field(0), EXIMcomplianceData, oracleSignature);
+   const proof = await EXIM.proveCompliance(Field(0), EXIMComplianceDatao1, oracleSignature);
 
-   console.log('Corporate Registration Compliance Data ..', EXIMcomplianceData.entityName.toString(), ' compliance ..', EXIMcomplianceData.iecStatus);
+   console.log('Corporate Registration Compliance Data ..', EXIMComplianceDatao1.entityName.toString(), ' compliance ..', EXIMComplianceDatao1.iecStatus);
    console.log('Corporate Registration Oracle Signature..', oracleSignature.toJSON());
 
    console.log('generating proof ..', proof.toJSON());
