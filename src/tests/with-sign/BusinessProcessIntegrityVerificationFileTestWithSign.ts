@@ -3,7 +3,7 @@ import { BusinessProcessIntegrityZKProgram, BusinessProcessIntegrityData, Busine
 import { BusinessProcessIntegrityVerifierSmartContract } from '../../contracts/with-sign/BusinessProcessIntegrityVerifierSmartContractWithSign.js'; //changed to with sign
 
 import axios from 'axios';
-import { ComplianceData } from '../../zk-programs/with-sign/CorporateRegistrationZKProgramWithSign.js'; //changed to with sign
+//import { ComplianceData } from '../../zk-programs/with-sign/CorporateRegistrationZKProgramWithSign.js'; //changed to with sign
 
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
