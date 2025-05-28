@@ -2,7 +2,7 @@ import { Field, Mina, PrivateKey, AccountUpdate, CircuitString, Poseidon, Signat
 import { EXIM} from '../../zk-programs/with-sign/EXIMZKProgramWithSign.js';
 import { EXIMVerifierSmartContract } from '../../contracts/with-sign/EXIMVerifierSmartContractWithSign.js';
 
-import axios from 'axios';
+// import axios from 'axios';
 
 
 import { fetchEXIMCompanyData } from './EXIMUtils.js';
@@ -48,10 +48,10 @@ async function main() {
    
 
 
-
       const companyName = process.argv[2];
       let typeOfNet = process.argv[3];
       console.log('Company Name:', companyName);
+      console.log('Type of Net:', typeOfNet);
    
       // Fetch company data using the utility function
       let parsedData;

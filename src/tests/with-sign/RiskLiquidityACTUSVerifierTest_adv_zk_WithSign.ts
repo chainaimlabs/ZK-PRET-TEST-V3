@@ -1,18 +1,10 @@
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString, Poseidon, Signature } from 'o1js';
-//import { CorporateRegistrationProof, CorporateRegistration } from './CorporateRegistrationZKProgram.js';
 import { loadAndProcessJsonData } from '../../core/map_with_zk_adv.js';
 import { LiquidityRatio, ACTUSData } from '../../zk-programs/with-sign/RiskLiquidityACTUSZKProgram_adv_zk_WithSign.js';
 import { LiquidityRatioVerifierSmartContract } from '../../contracts/with-sign/RiskLiquidityVerifierACTUSSmartContract_adv_zk_WithSign.js';
-import axios from 'axios';
-
 import { getPrivateKeyFor } from '../../core/OracleRegistry.js';
+import { fetchActusData } from './RiskUtilsADV.js';
 
-
-
-//import { loadAndProcessJson } from './map_dynamic_range_flow.js';
-//import {  } from './CorporateRegistrationVerifierSmartContract.js';
-//import {  }  from './CorporateRegistrationZKProgram.js';
-//import { SecretHash, SecretHashProof } from './SecretHash.js'; 
 async function main() {
    /*const Local = Mina.LocalBlockchain({ proofsEnabled: true });
  
@@ -21,7 +13,6 @@ async function main() {
  Mina.setActiveInstance(localInstance);
    const deployer = (await Local).testAccounts[0].key;
    const deployerPublicKey = deployer.toPublicKey();*/
-
    const useProof = false;
    const userLiquidityThreshold = parseFloat(process.argv[2]);
    const Local = await Mina.LocalBlockchain({ proofsEnabled: useProof });
@@ -37,8 +28,6 @@ async function main() {
 
    //const deployer = localInstance.testAccounts[0].keypair.privateKey; // If keypair exists
 
-   // Compile artifacts
-   console.log('Compiling...');
    //await SecretHash.compile();
    // await CorporateRegistration.compile();
 
@@ -151,29 +140,26 @@ async function main() {
 
    let jsondata: string | undefined;
    // Send POST request using axios
-   await axios.post(url, data)
-      .then(response => {
-         console.log('Response Code:', response.status);
-         console.log('Response Body:', response.data);
+   // await axios.post(url, data)
+   //    .then(response => {
+   //       console.log('Response Code:', response.status);
+   //       console.log('Response Body:', response.data);
 
 
-         jsondata = JSON.stringify(response.data, null, 2);
-      })
-      .catch(error => {
-         console.error('Error:', error.response ? error.response.data : error.message);
-      });
+   //       jsondata = JSON.stringify(response.data, null, 2);
+   //    })
+   //    .catch(error => {
+   //       console.error('Error:', error.response ? error.response.data : error.message);
+   //    });
 
-   if (!jsondata) {
-      throw new Error('Failed to fetch JSON data');
-   }
+   // if (!jsondata) {
+   //    throw new Error('Failed to fetch JSON data');
+   // }
 
    console.log("Fetching compliance data...");
-   /*const basePath = "D:/chainaimlabs/actus live server/RiskProver_Prabakaran_4thfeb/scf-main/scf-rwa/zkapps/scf-rwa-recursion/";// mention basepath
-   const relativePath = "src/response.json";
-   const fullPath = path.join(basePath, relativePath);*/
-
-
-   const { inflow: cashInfl, outflow: cashOutfl, monthsCount } = loadAndProcessJsonData(jsondata);
+   const actusData = await fetchActusData();
+    
+   const { inflow: cashInfl, outflow: cashOutfl, monthsCount } = actusData;
    const Inf: number[] = cashInfl.map(block => block.reduce((sum, value) => sum + value, 0));
    const Outf: number[] = cashOutfl.map(block => block.reduce((sum, value) => sum + value, 0));
 

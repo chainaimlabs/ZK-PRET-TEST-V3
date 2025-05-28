@@ -9,8 +9,9 @@ import { fetchGLEIFCompanyData } from './GLEIFUtils.js';
 import { getGLEIFComplianceDataO1 } from './GLEIFo1.js';
 import {GLEIFComplianceDataO1} from './GLEIFo1.js'
 
-async function main() {
-   // Compile programs
+async function getGLEIFVerificationWithSign(companyName: string, typeOfNet: string) 
+{
+      // Compile programs
    await GLEIF.compile();
    const { verificationKey } = await GLEIFVerifierSmartContract.compile();
 
@@ -31,10 +32,7 @@ async function main() {
    console.log("Deploy transaction signed successfully");
 
 //----------------------------------------------------------------------------------------------------------------
-   // Get company name from command line
-   const companyName = process.argv[2];
-   let typeOfNet = process.argv[3];
-   console.log('Company Name:', companyName);
+
 
    // Fetch company data using the utility function
    let parsedData;
@@ -99,6 +97,16 @@ async function main() {
 
    console.log("Final value of num:", zkApp.num.get().toJSON());
    console.log('✅ Proof verified successfully!');
+}
+async function main() {
+   
+   // Get company name from command line
+   const companyName = process.argv[2];
+   let typeOfNet = process.argv[3];
+   console.log('Company Name:', companyName);
+   await getGLEIFVerificationWithSign(companyName, typeOfNet)
+
+
 }
 
 main().catch(err => {

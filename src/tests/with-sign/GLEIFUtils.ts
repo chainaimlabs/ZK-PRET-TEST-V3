@@ -2,6 +2,18 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+export async function isCompanyGLEIFCompliant(companyName: string, typeOfNet: string): Promise<boolean> {
+    
+    let res = await fetchGLEIFCompanyData(companyName, typeOfNet)
+    const status = res?.data?.attributes?.entity?.status;
+    console.log('status',status);
+    console.log('res',res);
+    
+    return res.data && res.data.length > 0;
+}
+
+
+
 export async function fetchGLEIFCompanyData(companyName: string, typeOfNet: string): Promise<any> {
     //const BASEURL = process.env.GLEIF_URL_PROD;
     let BASEURL: string | undefined;
@@ -50,6 +62,20 @@ export async function fetchGLEIFCompanyData(companyName: string, typeOfNet: stri
     if (!parsedData.data || parsedData.data.length === 0) {
     throw new Error('No company found with that name.');
     }
-
+    
     return parsedData;
 }
+async function main() {
+   
+   // Get company name from command line
+   const companyName = process.argv[2];
+   let typeOfNet = process.argv[3];
+   console.log('Company Name:', companyName);
+//    await fetchGLEIFCompanyData(companyName, typeOfNet)
+    let res = await isCompanyGLEIFCompliant(companyName, typeOfNet);
+    console.log('res ',res);
+}
+
+main().catch(err => {
+   console.error('Error:', err);
+});
