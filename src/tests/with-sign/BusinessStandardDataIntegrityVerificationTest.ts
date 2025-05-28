@@ -1,17 +1,12 @@
 import { exec } from 'child_process';
 import * as fs from 'fs';
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString } from 'o1js';
-import { BusinessStandardDataIntegrityZKProgram, BusinessStandardDataIntegrityComplianceData, BusinessStandardDataIntegrityProof } from '../../zk-programs/with-sign/BusinessStandardDataIntegrityZKProgram.js';
+import { BusinessStandardDataIntegrityZKProgram, BusinessStandardDataIntegrityComplianceData } from '../../zk-programs/with-sign/BusinessStandardDataIntegrityZKProgram.js';
 import { BusinessStandardDataIntegrityVerificationSmartContract } from '../../contracts/with-sign/BusinessStandardDataIntegrityVerificationSmartContract.js';
-import { createComplianceData } from '../../tests/with-sign/BSDIo1.js';
-
-
-import axios from 'axios';
+import { createComplianceData } from './BSDIo1.js';
+import { readBLJsonFile } from './BSDIUtils.js';
 
 async function main() {
-   const expectedContent = "a(cb|bc)d(ef|f)g";
-   
-   // Get BL JSON file path from command line argument
    const evalBLJsonFileName = process.argv[2];
 
    if (!evalBLJsonFileName) {
@@ -19,8 +14,8 @@ async function main() {
       process.exit(1);
    }
 
-   // Read and parse the BL JSON file
-   const evalBLJson = JSON.parse(await fs.promises.readFile(evalBLJsonFileName, 'utf8'));
+   // Use the utility function to read the file
+   const evalBLJson = await readBLJsonFile(evalBLJsonFileName);
 
    console.log("Evaluating BL JSON from file:", evalBLJsonFileName);
    console.log("eval BL JSON in verification test:", evalBLJson);

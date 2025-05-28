@@ -1,41 +1,55 @@
-import { Field, CircuitString, Poseidon, Signature } from 'o1js';
-import { BusinessProcessIntegrityData } from '../../zk-programs/with-sign/BusinessProcessIntegrityZKProgramWithSign.js';
-import { getPrivateKeyFor } from '../../core/OracleRegistry.js';
-import parseBpmn from '../../utils/parsebpmn.js';
+import axios from 'axios';
+import * as fs from 'fs';
 
-export async function processBusinessData(
-    businessProcessType: string,
-    expectedBPMNFileName: string,
-    actualBPMNFileName: string
-): Promise<{
-    bpComplianceData: BusinessProcessIntegrityData;
-    oracleSignature: Signature;
-}> {
+interface BSDIResponse {
+    iec: string;
+    entityName: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    pin: number;
+    contactNo: number;
+    email: string;
+    iecIssueDate: string;
+    exporterType: number;
+    pan: string;
+    iecStatus: number;
+    starStatus: number;
+    iecModificationDate: string;
+    dataAsOn: string;
+    natureOfConcern: number;
+    branches: Array<{
+        branchCode: number;
+        badd1: string;
+        badd2: string;
+        city: string;
+        state: string;
+        pin: number;
+    }>;
+    directors: Array<{
+        name: string;
+    }>;
+}
+
+export async function fetchBSDIData(companyName: string): Promise<BSDIResponse> {
+    const BASEURL = "https://0f4aef00-9db0-4057-949e-df6937e3449b.mock.pstmn.io";
     try {
-        // Parse BPMN files
-        const expectedPath = await parseBpmn(expectedBPMNFileName) || "";
-        const actualPath = await parseBpmn(actualBPMNFileName) || "";
+        const response = await axios.get(`${BASEURL}/${companyName}`);
+        console.log('BSDI API Response:', response.data);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error fetching BSDI data:', error.message);
+        throw new Error('Failed to fetch BSDI data');
+    }
+}
 
-        console.log("EXP:", expectedPath);
-        console.log("ACT:", actualPath);
-
-        // Create compliance data
-        const bpComplianceData = new BusinessProcessIntegrityData({
-            businessProcessID: Field(0),
-            businessProcessType: CircuitString.fromString(businessProcessType),
-            expectedContent: CircuitString.fromString(expectedPath),
-            actualContent: CircuitString.fromString(actualPath),
-            str: "String to print"
-        });
-
-        // Generate signature
-        const complianceDataHash = Poseidon.hash(BusinessProcessIntegrityData.toFields(bpComplianceData));
-        const registryPrivateKey = getPrivateKeyFor('BPMN');
-        const oracleSignature = Signature.create(registryPrivateKey, [complianceDataHash]);
-
-        return { bpComplianceData, oracleSignature };
-    } catch (error) {
-        console.error('Error processing business data:', error);
-        throw error;
+export async function readBLJsonFile(filePath: string): Promise<any> {
+    try {
+        const data = await fs.promises.readFile(filePath, 'utf8');
+        return JSON.parse(data);
+    } catch (error: any) {
+        console.error('Error reading BL JSON file:', error.message);
+        throw new Error('Failed to read BL JSON file');
     }
 }
