@@ -44,7 +44,7 @@ import { z } from "zod";
 import { isCompanyGLEIFCompliant,fetchGLEIFCompanyData } from "../tests/with-sign/GLEIFUtils.js";
 import { fetchEXIMCompanyData } from "../tests/with-sign/EXIMUtils.js";
 import {getGLEIFVerificationWithSign} from "../tests/with-sign/GLEIFVerificationTestWithSign.js";
-
+import {fetchCorporateRegistrationData} from "../tests/with-sign/CorporateRegistrationUtils.js";
 export function registerPRETTools(server: McpServer) {  
 //server tool gleif api call
   server.tool(
@@ -81,7 +81,7 @@ export function registerPRETTools(server: McpServer) {
   );
 
   //server tool gleif api call
-  server.tool(
+  /*server.tool(
     "get-GLEIF-verification-with-sign",
     "get GLEIF data takes company name and type of net TESTNET,MAINNET,etc and get GLEIF compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
@@ -112,7 +112,7 @@ export function registerPRETTools(server: McpServer) {
         };
       }
     }
-  );
+  );*/
 
   server.tool(
     "get-Is-company-GLEIF-compliant",
@@ -177,6 +177,38 @@ export function registerPRETTools(server: McpServer) {
           content: [{
             type: "text",
             text: `Error resolving company name: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
+  server.tool(
+    "get-MCA-data",
+    "get GLEIF data for a company name and depending on the environment it will call different apis example TESTNET vs MAINNET vs LOCAL",
+    {
+      cin: z.string().describe("CIN for MCA search (e.g., 'U01112TZ2022PTC039493')"),
+      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+    },
+    async ({ cin, typeOfNet }: { cin: string; typeOfNet?: string }) => {
+      try {
+        console.log(`Resolving GLEIF data for company: ${cin} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await fetchCorporateRegistrationData(cin, typeOfNet ?? 'TESTNET');
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              cin: cin,
+              response: response,
+              typeOfNet
+            }, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error resolving CIN: ${error instanceof Error ? error.message : String(error)}`
           }],
           isError: true
         };

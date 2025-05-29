@@ -96,6 +96,7 @@ export async function getGLEIFVerificationWithSign(companyName: string, typeOfNe
 
    console.log("Final value of num:", zkApp.num.get().toJSON());
    console.log('✅ Proof verified successfully!');
+   return proof.toJSON();
 }
 async function main() {
 
@@ -103,8 +104,8 @@ async function main() {
    const companyName = process.argv[2];
    let typeOfNet = process.argv[3];
    console.log('Company Name:', companyName);
-   await getGLEIFVerificationWithSign(companyName, typeOfNet)
-
+   let proof = await getGLEIFVerificationWithSign(companyName, typeOfNet)
+   //console.log('Proof:', proof);
 
 }
 
