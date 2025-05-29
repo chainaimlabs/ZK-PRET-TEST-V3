@@ -1,87 +1,96 @@
-import { Field, Mina, PrivateKey, AccountUpdate } from 'o1js';
-import { BusinessStandardDataIntegrityZKProgram } from '../../zk-programs/with-sign/BusinessStandardDataIntegrityZKProgram.js';
+import { exec } from 'child_process';
+import * as fs from 'fs';
+import { Field, Mina, PrivateKey, AccountUpdate, CircuitString } from 'o1js';
+import { BusinessStandardDataIntegrityZKProgram, BusinessStandardDataIntegrityComplianceData } from '../../zk-programs/with-sign/BusinessStandardDataIntegrityZKProgram.js';
 import { BusinessStandardDataIntegrityVerificationSmartContract } from '../../contracts/with-sign/BusinessStandardDataIntegrityVerificationSmartContract.js';
 import { createComplianceData } from './BSDIo1.js';
 import { readBLJsonFile } from './BSDIUtils.js';
 
-export async function getBSDIVerificationWithSign(blJsonFilePath: string, typeOfNet?: string) {
-   // Read BL JSON file
-   const evalBLJson = await readBLJsonFile(blJsonFilePath);
+export async function getBSDIVerificationWithSign(evalBLJsonFileName: string) {
+    // Read and validate BL JSON
+    const evalBLJson = await readBLJsonFile(evalBLJsonFileName);
+    console.log("Evaluating BL JSON from file:", evalBLJsonFileName);
+    console.log("eval BL JSON in verification test:", evalBLJson);
 
-   // Setup Mina local blockchain (or adapt for other networks)
-   const useProof = false;
-   const Local = await Mina.LocalBlockchain({ proofsEnabled: useProof });
-   Mina.setActiveInstance(Local);
+    // Setup Mina Local Blockchain
+    const useProof = false;
+    const Local = await Mina.LocalBlockchain({ proofsEnabled: useProof });
+    Mina.setActiveInstance(Local);
 
-   const deployerAccount = Local.testAccounts[0];
-   const deployerKey = deployerAccount.key;
-   const senderAccount = Local.testAccounts[1];
-   const senderKey = senderAccount.key;
+    // Setup accounts
+    const deployerAccount = Local.testAccounts[0];
+    const deployerKey = deployerAccount.key;
+    const senderAccount = Local.testAccounts[1];
+    const senderKey = senderAccount.key;
 
-   // Compile ZK program and contract
-   await BusinessStandardDataIntegrityZKProgram.compile();
-   const { verificationKey } = await BusinessStandardDataIntegrityVerificationSmartContract.compile();
+    console.log('Compiling...');
 
-   // Deploy contract
-   const zkAppKey = PrivateKey.random();
-   const zkAppAddress = zkAppKey.toPublicKey();
-   const zkApp = new BusinessStandardDataIntegrityVerificationSmartContract(zkAppAddress);
+    // Compile ZK Program and Smart Contract
+    await BusinessStandardDataIntegrityZKProgram.compile();
+    const { verificationKey } = await BusinessStandardDataIntegrityVerificationSmartContract.compile();
 
-   const deployTxn = await Mina.transaction(
-      deployerAccount,
-      async () => {
-         AccountUpdate.fundNewAccount(deployerAccount);
-         await zkApp.deploy({ verificationKey });
-      }
-   );
-   await deployTxn.sign([deployerKey, zkAppKey]).send();
+    // Setup ZK App
+    const zkAppKey = PrivateKey.random();
+    const zkAppAddress = zkAppKey.toPublicKey();
+    const zkApp = new BusinessStandardDataIntegrityVerificationSmartContract(zkAppAddress);
 
-   // Prepare compliance data and generate proof
-   const complianceData = createComplianceData(blJsonFilePath, evalBLJson);
-   const proof = await BusinessStandardDataIntegrityZKProgram.proveCompliance(Field(1), complianceData);
+    console.log("Mina transaction is successful");
 
-   // Verify proof on-chain
-   const txn = await Mina.transaction(
-      senderAccount,
-      async () => {
-         await zkApp.verifyComplianceWithProof(proof);
-      }
-   );
-   await txn.prove();
-   await txn.sign([senderKey]).send();
+    // Deploy Smart Contract
+    const deployTxn = await Mina.transaction(
+        deployerAccount,
+        async () => {
+            AccountUpdate.fundNewAccount(deployerAccount);
+            await zkApp.deploy({ verificationKey });
+        }
+    );
+    
+    await deployTxn.sign([deployerKey, zkAppKey]).send();
+    console.log("deployTxn signed successfully");
 
-   return {
-      blJsonFilePath,
-      typeOfNet: typeOfNet ?? 'TESTNET',
-      proof: proof.toJSON ? proof.toJSON() : proof,
-      verificationTimestamp: new Date().toISOString()
-   };
+    // Create compliance data and generate proof
+    const BusinessStandardDataIntegritycomplianceData = createComplianceData(evalBLJsonFileName, evalBLJson);
+    const proof = await BusinessStandardDataIntegrityZKProgram.proveCompliance(Field(1), BusinessStandardDataIntegritycomplianceData);
+
+    // Verify proof
+    const txn = await Mina.transaction(
+        senderAccount,
+        async () => {
+            await zkApp.verifyComplianceWithProof(proof);
+        }
+    );
+
+    const proof1 = await txn.prove();
+    console.log("Proof generated successfully");
+    console.log("Generated Proof:", proof1.toPretty());
+    
+    await txn.sign([senderKey]).send();
+    console.log('✅ Proof verified successfully!');
+
+    return proof1;
 }
 
-// CLI entry point
-if (require.main === module) {
-   async function main() {
-      const blJsonFilePath = process.argv[2];
-      const typeOfNet = process.argv[3];
-      if (!blJsonFilePath) {
-         console.error("Usage: node BusinessStandardDataIntegrityVerificationTest.js <blJsonFilePath> [typeOfNet]");
-         process.exit(1);
-      }
-      try {
-         const result = await getBSDIVerificationWithSign(blJsonFilePath, typeOfNet);
-         console.log(JSON.stringify(result, null, 2));
-      } catch (err) {
-         console.error("Error:", err);
-         process.exit(1);
-      }
-   }
-   main();
+async function main() {
+    try {
+        const evalBLJsonFileName = process.argv[2];
+
+        if (!evalBLJsonFileName) {
+            console.error('Please provide the BL JSON file path as an argument');
+            process.exit(1);
+        }
+
+        const proof = await getBSDIVerificationWithSign(evalBLJsonFileName);
+        console.log('Verification completed successfully');
+        return proof;
+    } catch (err) {
+        console.error('Error:', err);
+        throw err;
+    }
 }
 
-
-
-
-
+main().catch(err => {
+    console.error('Error in main:', err);
+});
 
 
 /*import { exec } from 'child_process';

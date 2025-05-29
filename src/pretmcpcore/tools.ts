@@ -224,11 +224,10 @@ export function registerPRETTools(server: McpServer) {
     {
       companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
       blJsonFilePath: z.string().describe("Path to the BL JSON file for evaluation(e.g., '.data/scf/actualBL1.json')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL', 'TESTNET', 'MAINNET')")
     },
-    async ({ blJsonFilePath, typeOfNet }: { blJsonFilePath: string; typeOfNet?: string }) => {
+    async ({ blJsonFilePath }: { blJsonFilePath: string}) => {
       try {
-        const result = await getBSDIVerificationWithSign(blJsonFilePath, typeOfNet);
+        const result = await getBSDIVerificationWithSign(blJsonFilePath);
         return {
           content: [{
             type: "text",
