@@ -1,44 +1,3 @@
-// import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-// import { z } from "zod";
-// import { fetchGLEIFCompanyData } from "../tests/with-sign/GLEIFUtils.js";
-// export function registerPRETTools(server: McpServer) {  
-// //Resolve ENS name to address
-//   server.tool(
-//     "get-GLEIF-data",
-//     "get GLEIF data for a company name and depending on the environment it will call different apis example TESTNET vs MAINNET vs LOCAL",
-//     {
-//       companyName: z.string().describe("ENS name to resolve (e.g., 'vitalik.eth')"),
-//       typeOfNet: z.string().optional().describe("Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. ENS resolution works best on Ethereum mainnet. Defaults to Ethereum mainnet.")
-//     },
-//     async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
-//       try {
-//         console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
-//         const response = await fetchGLEIFCompanyData(companyName, typeOfNet ?? 'TESTNET');
-//         return {
-//           content: [{
-//             type: "text",
-//             text: JSON.stringify({
-//               ensName: companyName,
-//               response: response,
-//               typeOfNet
-//             }, null, 2)
-//           }]
-//         };
-//       } catch (error) {
-//         return {
-//           content: [{
-//             type: "text",
-//             text: `Error resolving ENS name: ${error instanceof Error ? error.message : String(error)}`
-//           }],
-//           isError: true
-//         };
-//       }
-//     }
-//   );
-
-// }
-
-
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { isCompanyGLEIFCompliant,fetchGLEIFCompanyData } from "../tests/with-sign/GLEIFUtils.js";
@@ -46,6 +5,16 @@ import { fetchEXIMCompanyData } from "../tests/with-sign/EXIMUtils.js";
 import {getGLEIFVerificationWithSignUtils} from "../tests/with-sign/GLEIFVerificationTestWithSignUtils.js";
 import {fetchCorporateRegistrationData} from "../tests/with-sign/CorporateRegistrationUtils.js";
 import { getBSDIVerificationWithSignUtils } from "../tests/with-sign/BusinessStandardDataIntegrityVerificationTestUtils.js";
+import {getBPIVerificationFileTestWithSign} from "../tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSignUtils.js";
+import {getRiskADVZKWithSign} from "../tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSignUtils.js";
+import { getRiskBasel3WithSign } from "../tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_WithsignUtils.js";
+
+
+
+
+
+
+
 export function registerPRETTools(server: McpServer) {  
 //server tool gleif api call
   server.tool(
@@ -239,6 +208,99 @@ export function registerPRETTools(server: McpServer) {
           content: [{
             type: "text",
             text: `Error verifying BSDI compliance: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
+  server.tool(
+    "get-BPI-compliance-verification",
+    "Verify BPI compliance for a company using BL JSON file and produce a ZK proof.",
+    {
+      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
+      businessProcessType: z.string().describe("Type of business process (e.g., 'SCF', 'BPI')"),
+      expectedPath: z.string().describe("Path to the expected content file (e.g., '.src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn')"),
+      actualPath: z.string().describe("Path to the actual content file (e.g., '.src/data/scf/process/bpmn-SCF-Example-Process-Actual.bpmn')"),
+      //blJsonFilePath: z.string().describe("Path to the BL JSON file for evaluation(e.g., '.data/scf/actualBL1.json')"),
+    },
+    async ({ businessProcessType,expectedPath,actualPath }: { businessProcessType:string,expectedPath:string,actualPath:string}) => {
+      try {
+        const result = await getBPIVerificationFileTestWithSign(businessProcessType,expectedPath,actualPath);
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(result, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error verifying BSDI compliance: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
+  server.tool(
+    "get-RiskLiquidityACTUS-Verifier-Test_adv_zk",
+    "Verify Risk Liquidity ACTUS compliance for a user liquidity threshold and produce a ZK proof.",
+    {
+      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
+      userLiquidityThreshold: z.number().describe("User liquidity threshold for evaluation (e.g., '8','9')"),
+    },
+    async ({ userLiquidityThreshold }: { userLiquidityThreshold: number }) => {
+      try {
+        // const thresholdNumber = Number(userLiquidityThreshold);
+        // if (isNaN(thresholdNumber)) {
+        //   throw new Error("userLiquidityThreshold must be a valid number string");
+        // }
+        const result = await getRiskADVZKWithSign(userLiquidityThreshold);
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(result, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error verifying Risk Liquidity: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
+  server.tool(
+    "get-RiskLiquidityACTUS-Verifier-Test_Basel3_Withsign",
+    "Verify Risk Liquidity ACTUS compliance for a user liquidity threshold and produce a ZK proof.",
+    {
+      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
+      userLiquidityThreshold_LCR: z.number().describe("User liquidity threshold for evaluation (e.g., '0.5','1','2')"),
+      url: z.string().describe("Optional URL to fetch JSON data from (e.g., 'https://example.com/data.json')")
+    },
+    async ({ userLiquidityThreshold_LCR,url }:{userLiquidityThreshold_LCR:number,url:string}) => {
+      try {
+        // const thresholdNumber = Number(userLiquidityThreshold_LCR);
+        // if (isNaN(thresholdNumber)) {
+        //   throw new Error("userLiquidityThreshold_LCR must be a valid number string");
+        // }
+        const result = await getRiskBasel3WithSign(userLiquidityThreshold_LCR,url);
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(result, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error verifying Risk Liquidity: ${error instanceof Error ? error.message : String(error)}`
           }],
           isError: true
         };

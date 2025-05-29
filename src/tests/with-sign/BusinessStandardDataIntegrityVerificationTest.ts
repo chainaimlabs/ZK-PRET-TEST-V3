@@ -6,7 +6,7 @@ import { BusinessStandardDataIntegrityVerificationSmartContract } from '../../co
 import { createComplianceData } from './BSDIo1.js';
 import { readBLJsonFile } from './BSDIUtils.js';
 import { getBSDIVerificationWithSignUtils } from './BusinessStandardDataIntegrityVerificationTestUtils.js';
-export async function getBSDIVerificationWithSign(evalBLJsonFileName: string) {
+/*export async function getBSDIVerificationWithSign(evalBLJsonFileName: string) {
     // Read and validate BL JSON
     const evalBLJson = await readBLJsonFile(evalBLJsonFileName);
     console.log("Evaluating BL JSON from file:", evalBLJsonFileName);
@@ -68,7 +68,7 @@ export async function getBSDIVerificationWithSign(evalBLJsonFileName: string) {
     console.log('✅ Proof verified successfully!');
 
     return proof1;
-}
+}*/
 
 async function main() {
     try {
