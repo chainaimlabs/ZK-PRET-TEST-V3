@@ -43,9 +43,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { isCompanyGLEIFCompliant,fetchGLEIFCompanyData } from "../tests/with-sign/GLEIFUtils.js";
 import { fetchEXIMCompanyData } from "../tests/with-sign/EXIMUtils.js";
-import {getGLEIFVerificationWithSign} from "../tests/with-sign/GLEIFVerificationTestWithSign.js";
+import {getGLEIFVerificationWithSignUtils} from "../tests/with-sign/GLEIFVerificationTestWithSignUtils.js";
 import {fetchCorporateRegistrationData} from "../tests/with-sign/CorporateRegistrationUtils.js";
-import { getBSDIVerificationWithSign } from "../tests/with-sign/BusinessStandardDataIntegrityVerificationTest.js";
+import { getBSDIVerificationWithSignUtils } from "../tests/with-sign/BusinessStandardDataIntegrityVerificationTestUtils.js";
 export function registerPRETTools(server: McpServer) {  
 //server tool gleif api call
   server.tool(
@@ -82,7 +82,7 @@ export function registerPRETTools(server: McpServer) {
   );
 
   //server tool gleif api call
-  /*server.tool(
+  server.tool(
     "get-GLEIF-verification-with-sign",
     "get GLEIF data takes company name and type of net TESTNET,MAINNET,etc and get GLEIF compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
@@ -92,7 +92,7 @@ export function registerPRETTools(server: McpServer) {
     async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
       try {
         console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const response = await getGLEIFVerificationWithSign(companyName, typeOfNet ?? 'TESTNET');
+        const response = await getGLEIFVerificationWithSignUtils(companyName, typeOfNet ?? 'TESTNET');
         return {
           content: [{
             type: "text",
@@ -113,7 +113,7 @@ export function registerPRETTools(server: McpServer) {
         };
       }
     }
-  );*/
+  );
 
   server.tool(
     "get-Is-company-GLEIF-compliant",
@@ -222,12 +222,12 @@ export function registerPRETTools(server: McpServer) {
     "get-BSDI-compliance-verification",
     "Verify BSDI compliance for a company using BL JSON file and produce a ZK proof.",
     {
-      companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
+      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
       blJsonFilePath: z.string().describe("Path to the BL JSON file for evaluation(e.g., '.data/scf/actualBL1.json')"),
     },
     async ({ blJsonFilePath }: { blJsonFilePath: string}) => {
       try {
-        const result = await getBSDIVerificationWithSign(blJsonFilePath);
+        const result = await getBSDIVerificationWithSignUtils(blJsonFilePath);
         return {
           content: [{
             type: "text",

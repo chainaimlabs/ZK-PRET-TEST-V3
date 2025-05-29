@@ -8,103 +8,108 @@ import { GLEIFdeployerAccount, GLEIFsenderAccount, GLEIFdeployerKey, GLEIFsender
 import { fetchGLEIFCompanyData } from './GLEIFUtils.js';
 import { getGLEIFComplianceDataO1 } from './GLEIFo1.js';
 import { GLEIFComplianceDataO1 } from './GLEIFo1.js'
-
-export async function getGLEIFVerificationWithSign(companyName: string, typeOfNet: string) {
-   // Compile programs
-   await GLEIF.compile();
-   const { verificationKey } = await GLEIFVerifierSmartContract.compile();
-
-   // Generate ZKApp key and address
-   const zkAppKey = PrivateKey.random();
-   const zkAppAddress = zkAppKey.toPublicKey();
-   const zkApp = new GLEIFVerifierSmartContract(zkAppAddress);
-
-   // Deploy ZKApp
-   const deployTxn = await Mina.transaction(
-      GLEIFdeployerAccount,
-      async () => {
-         AccountUpdate.fundNewAccount(GLEIFdeployerAccount);
-         await zkApp.deploy({ verificationKey });
-      }
-   );
-   await deployTxn.sign([GLEIFdeployerKey, zkAppKey]).send();
-   console.log("Deploy transaction signed successfully");
-
-   //----------------------------------------------------------------------------------------------------------------
+import {getGLEIFVerificationWithSignUtils} from './GLEIFVerificationTestWithSignUtils.js';
 
 
-   // Fetch company data using the utility function
-   let parsedData;
-   try {
-      parsedData = await fetchGLEIFCompanyData(companyName, typeOfNet);
-   } catch (err: any) {
-      console.error(err.message);
-      process.exit(1);
-   }
+// export async function getGLEIFVerificationWithSign(companyName: string, typeOfNet: string) {
+//    // Compile programs
+//    await GLEIF.compile();
+//    const { verificationKey } = await GLEIFVerifierSmartContract.compile();
 
-   //----------------------------------------------------------------------------------------------------------------
-   // Use the first matching record
-   // const record = parsedData.data[0];
-   const GLEIFcomplianceDataO1 = getGLEIFComplianceDataO1(parsedData);
+//    // Generate ZKApp key and address
+//    const zkAppKey = PrivateKey.random();
+//    const zkAppAddress = zkAppKey.toPublicKey();
+//    const zkApp = new GLEIFVerifierSmartContract(zkAppAddress);
 
-   // Create GLEIF compliance data
-   /* const GLEIFcomplianceData = new GLEIFComplianceData({
-       type: CircuitString.fromString(record.type || ''),
-       id: CircuitString.fromString(record.id || ''),
-       lei: CircuitString.fromString(record.attributes.lei || ''),
-       name: CircuitString.fromString(record.attributes.entity.legalName?.name || ''),
-       //initialRegistrationDate: CircuitString.fromString(record.attributes.registration?.initialRegistrationDate || ''),
-       //lastUpdateDate: CircuitString.fromString(record.attributes.registration?.lastUpdateDate || ''),
-       //activeComplianceStatusCode: Field(
-       //    typeof record.attributes.registration?.activeComplianceStatusCode === 'number'
-       //       ? record.attributes.registration.activeComplianceStatusCode
-       //       : 0
-       // ),
-       registration_status: CircuitString.fromString(record.attributes.entity.status || ''),
-       //nextRenewalDate: CircuitString.fromString(record.attributes.registration?.nextRenewalDate || '')
-    });*/
+//    // Deploy ZKApp
+//    const deployTxn = await Mina.transaction(
+//       GLEIFdeployerAccount,
+//       async () => {
+//          AccountUpdate.fundNewAccount(GLEIFdeployerAccount);
+//          await zkApp.deploy({ verificationKey });
+//       }
+//    );
+//    await deployTxn.sign([GLEIFdeployerKey, zkAppKey]).send();
+//    console.log("Deploy transaction signed successfully");
 
-   // =================================== Oracle Signature Generation ===================================
-   // Create message hash
-   const complianceDataHash = Poseidon.hash(GLEIFComplianceDataO1.toFields(GLEIFcomplianceDataO1));
+//    //----------------------------------------------------------------------------------------------------------------
 
-   // Get oracle private key
-   const registryPrivateKey = getPrivateKeyFor('GLEIF');
 
-   // Sign the message hash with the oracle's private key
-   const oracleSignature = Signature.create(registryPrivateKey, [complianceDataHash]);
+//    // Fetch company data using the utility function
+//    let parsedData;
+//    try {
+//       parsedData = await fetchGLEIFCompanyData(companyName, typeOfNet);
+//    } catch (err: any) {
+//       console.error(err.message);
+//       process.exit(1);
+//    }
 
-   // =================================== Generate Proof ===================================
-   const proof = await GLEIF.proveCompliance(Field(0), GLEIFcomplianceDataO1, oracleSignature);
+//    //----------------------------------------------------------------------------------------------------------------
+//    // Use the first matching record
+//    // const record = parsedData.data[0];
+//    const GLEIFcomplianceDataO1 = getGLEIFComplianceDataO1(parsedData);
 
-   console.log('GLEIF Compliance Data ..', GLEIFcomplianceDataO1.name.toString(), ' compliance ..', GLEIFcomplianceDataO1.registration_status);
-   console.log('GLEIF Oracle Signature..', oracleSignature.toJSON());
+//    // Create GLEIF compliance data
+//    /* const GLEIFcomplianceData = new GLEIFComplianceData({
+//        type: CircuitString.fromString(record.type || ''),
+//        id: CircuitString.fromString(record.id || ''),
+//        lei: CircuitString.fromString(record.attributes.lei || ''),
+//        name: CircuitString.fromString(record.attributes.entity.legalName?.name || ''),
+//        //initialRegistrationDate: CircuitString.fromString(record.attributes.registration?.initialRegistrationDate || ''),
+//        //lastUpdateDate: CircuitString.fromString(record.attributes.registration?.lastUpdateDate || ''),
+//        //activeComplianceStatusCode: Field(
+//        //    typeof record.attributes.registration?.activeComplianceStatusCode === 'number'
+//        //       ? record.attributes.registration.activeComplianceStatusCode
+//        //       : 0
+//        // ),
+//        registration_status: CircuitString.fromString(record.attributes.entity.status || ''),
+//        //nextRenewalDate: CircuitString.fromString(record.attributes.registration?.nextRenewalDate || '')
+//     });*/
 
-   console.log('generating proof ..', proof.toJSON());
+//    // =================================== Oracle Signature Generation ===================================
+//    // Create message hash
+//    const complianceDataHash = Poseidon.hash(GLEIFComplianceDataO1.toFields(GLEIFcomplianceDataO1));
 
-   // Verify proof
-   console.log("Before verification, Initial value of num:", zkApp.num.get().toJSON());
-   const txn = await Mina.transaction(
-      GLEIFsenderAccount,
-      async () => {
-         await zkApp.verifyComplianceWithProof(proof);
-      }
-   );
+//    // Get oracle private key
+//    const registryPrivateKey = getPrivateKeyFor('GLEIF');
 
-   await txn.prove();
-   await txn.sign([GLEIFsenderKey]).send();
+//    // Sign the message hash with the oracle's private key
+//    const oracleSignature = Signature.create(registryPrivateKey, [complianceDataHash]);
 
-   console.log("Final value of num:", zkApp.num.get().toJSON());
-   console.log('✅ Proof verified successfully!');
-   return proof.toJSON();
-}
+//    // =================================== Generate Proof ===================================
+//    const proof = await GLEIF.proveCompliance(Field(0), GLEIFcomplianceDataO1, oracleSignature);
+
+//    console.log('GLEIF Compliance Data ..', GLEIFcomplianceDataO1.name.toString(), ' compliance ..', GLEIFcomplianceDataO1.registration_status);
+//    console.log('GLEIF Oracle Signature..', oracleSignature.toJSON());
+
+//    console.log('generating proof ..', proof.toJSON());
+
+//    // Verify proof
+//    console.log("Before verification, Initial value of num:", zkApp.num.get().toJSON());
+//    const txn = await Mina.transaction(
+//       GLEIFsenderAccount,
+//       async () => {
+//          await zkApp.verifyComplianceWithProof(proof);
+//       }
+//    );
+
+//    await txn.prove();
+//    await txn.sign([GLEIFsenderKey]).send();
+
+//    console.log("Final value of num:", zkApp.num.get().toJSON());
+//    console.log('✅ Proof verified successfully!');
+//    return proof.toJSON();
+// }
+
+
+
 async function main() {
 
    // Get company name from command line
    const companyName = process.argv[2];
    let typeOfNet = process.argv[3];
    console.log('Company Name:', companyName);
-   let proof = await getGLEIFVerificationWithSign(companyName, typeOfNet)
+   let proof = await getGLEIFVerificationWithSignUtils(companyName, typeOfNet)
    //console.log('Proof:', proof);
 
 }

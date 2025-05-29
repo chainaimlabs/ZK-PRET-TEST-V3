@@ -5,8 +5,8 @@ import { BusinessStandardDataIntegrityZKProgram, BusinessStandardDataIntegrityCo
 import { BusinessStandardDataIntegrityVerificationSmartContract } from '../../contracts/with-sign/BusinessStandardDataIntegrityVerificationSmartContract.js';
 import { createComplianceData } from './BSDIo1.js';
 import { readBLJsonFile } from './BSDIUtils.js';
-import { getBSDIVerificationWithSignUtils } from './BusinessStandardDataIntegrityVerificationTestUtils.js';
-export async function getBSDIVerificationWithSign(evalBLJsonFileName: string) {
+
+export async function getBSDIVerificationWithSignUtils(evalBLJsonFileName: string) {
     // Read and validate BL JSON
     const evalBLJson = await readBLJsonFile(evalBLJsonFileName);
     console.log("Evaluating BL JSON from file:", evalBLJsonFileName);
@@ -70,27 +70,7 @@ export async function getBSDIVerificationWithSign(evalBLJsonFileName: string) {
     return proof1;
 }
 
-async function main() {
-    try {
-        const evalBLJsonFileName = process.argv[2];
 
-        if (!evalBLJsonFileName) {
-            console.error('Please provide the BL JSON file path as an argument');
-            process.exit(1);
-        }
-
-        const proof = await getBSDIVerificationWithSignUtils(evalBLJsonFileName);
-        console.log('Verification completed successfully');
-        return proof;
-    } catch (err) {
-        console.error('Error:', err);
-        throw err;
-    }
-}
-
-main().catch(err => {
-    console.error('Error in main:', err);
-});
 
 
 /*import { exec } from 'child_process';
