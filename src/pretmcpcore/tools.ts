@@ -44,7 +44,8 @@ import { z } from "zod";
 import { isCompanyGLEIFCompliant,fetchGLEIFCompanyData } from "../tests/with-sign/GLEIFUtils.js";
 import { fetchEXIMCompanyData } from "../tests/with-sign/EXIMUtils.js";
 import {getGLEIFVerificationWithSign} from "../tests/with-sign/GLEIFVerificationTestWithSign.js";
-
+import {fetchCorporateRegistrationData} from "../tests/with-sign/CorporateRegistrationUtils.js";
+import { getBSDIVerificationWithSign } from "../tests/with-sign/BusinessStandardDataIntegrityVerificationTest.js";
 export function registerPRETTools(server: McpServer) {  
 //server tool gleif api call
   server.tool(
@@ -81,7 +82,7 @@ export function registerPRETTools(server: McpServer) {
   );
 
   //server tool gleif api call
-  server.tool(
+  /*server.tool(
     "get-GLEIF-verification-with-sign",
     "get GLEIF data takes company name and type of net TESTNET,MAINNET,etc and get GLEIF compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
@@ -112,7 +113,7 @@ export function registerPRETTools(server: McpServer) {
         };
       }
     }
-  );
+  );*/
 
   server.tool(
     "get-Is-company-GLEIF-compliant",
@@ -182,7 +183,69 @@ export function registerPRETTools(server: McpServer) {
         };
       }
     }
-  )
+  );
+  server.tool(
+    "get-MCA-data",
+    "get GLEIF data for a company name and depending on the environment it will call different apis example TESTNET vs MAINNET vs LOCAL",
+    {
+      cin: z.string().describe("CIN for MCA search (e.g., 'U01112TZ2022PTC039493')"),
+      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+    },
+    async ({ cin, typeOfNet }: { cin: string; typeOfNet?: string }) => {
+      try {
+        console.log(`Resolving GLEIF data for company: ${cin} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await fetchCorporateRegistrationData(cin, typeOfNet ?? 'TESTNET');
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              cin: cin,
+              response: response,
+              typeOfNet
+            }, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error resolving CIN: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
+
+  //server tool BSDI api call
+  server.tool(
+    "get-BSDI-compliance-verification",
+    "Verify BSDI compliance for a company using BL JSON file and produce a ZK proof.",
+    {
+      companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
+      blJsonFilePath: z.string().describe("Path to the BL JSON file for evaluation(e.g., '.data/scf/actualBL1.json')"),
+      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL', 'TESTNET', 'MAINNET')")
+    },
+    async ({ blJsonFilePath, typeOfNet }: { blJsonFilePath: string; typeOfNet?: string }) => {
+      try {
+        const result = await getBSDIVerificationWithSign(blJsonFilePath, typeOfNet);
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(result, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error verifying BSDI compliance: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
 }
 
 
@@ -1406,5 +1469,5 @@ export function registerPRETTools(server: McpServer) {
 //       }
 //     }
 //   );
-// } 
+// }
 

@@ -7,11 +7,10 @@ import { GLEIFVerifierSmartContract } from '../../contracts/with-sign/GLEIFVerif
 import { GLEIFdeployerAccount, GLEIFsenderAccount, GLEIFdeployerKey, GLEIFsenderKey, getPrivateKeyFor } from '../../core/OracleRegistry.js';
 import { fetchGLEIFCompanyData } from './GLEIFUtils.js';
 import { getGLEIFComplianceDataO1 } from './GLEIFo1.js';
-import {GLEIFComplianceDataO1} from './GLEIFo1.js'
+import { GLEIFComplianceDataO1 } from './GLEIFo1.js'
 
-async function getGLEIFVerificationWithSign(companyName: string, typeOfNet: string) 
-{
-      // Compile programs
+export async function getGLEIFVerificationWithSign(companyName: string, typeOfNet: string) {
+   // Compile programs
    await GLEIF.compile();
    const { verificationKey } = await GLEIFVerifierSmartContract.compile();
 
@@ -31,39 +30,39 @@ async function getGLEIFVerificationWithSign(companyName: string, typeOfNet: stri
    await deployTxn.sign([GLEIFdeployerKey, zkAppKey]).send();
    console.log("Deploy transaction signed successfully");
 
-//----------------------------------------------------------------------------------------------------------------
+   //----------------------------------------------------------------------------------------------------------------
 
 
    // Fetch company data using the utility function
    let parsedData;
    try {
-     parsedData = await fetchGLEIFCompanyData(companyName,typeOfNet);
+      parsedData = await fetchGLEIFCompanyData(companyName, typeOfNet);
    } catch (err: any) {
-     console.error(err.message);
-     process.exit(1);
+      console.error(err.message);
+      process.exit(1);
    }
 
-//----------------------------------------------------------------------------------------------------------------
+   //----------------------------------------------------------------------------------------------------------------
    // Use the first matching record
    // const record = parsedData.data[0];
    const GLEIFcomplianceDataO1 = getGLEIFComplianceDataO1(parsedData);
 
    // Create GLEIF compliance data
-  /* const GLEIFcomplianceData = new GLEIFComplianceData({
-      type: CircuitString.fromString(record.type || ''),
-      id: CircuitString.fromString(record.id || ''),
-      lei: CircuitString.fromString(record.attributes.lei || ''),
-      name: CircuitString.fromString(record.attributes.entity.legalName?.name || ''),
-      //initialRegistrationDate: CircuitString.fromString(record.attributes.registration?.initialRegistrationDate || ''),
-      //lastUpdateDate: CircuitString.fromString(record.attributes.registration?.lastUpdateDate || ''),
-      //activeComplianceStatusCode: Field(
-      //    typeof record.attributes.registration?.activeComplianceStatusCode === 'number'
-      //       ? record.attributes.registration.activeComplianceStatusCode
-      //       : 0
-      // ),
-      registration_status: CircuitString.fromString(record.attributes.entity.status || ''),
-      //nextRenewalDate: CircuitString.fromString(record.attributes.registration?.nextRenewalDate || '')
-   });*/
+   /* const GLEIFcomplianceData = new GLEIFComplianceData({
+       type: CircuitString.fromString(record.type || ''),
+       id: CircuitString.fromString(record.id || ''),
+       lei: CircuitString.fromString(record.attributes.lei || ''),
+       name: CircuitString.fromString(record.attributes.entity.legalName?.name || ''),
+       //initialRegistrationDate: CircuitString.fromString(record.attributes.registration?.initialRegistrationDate || ''),
+       //lastUpdateDate: CircuitString.fromString(record.attributes.registration?.lastUpdateDate || ''),
+       //activeComplianceStatusCode: Field(
+       //    typeof record.attributes.registration?.activeComplianceStatusCode === 'number'
+       //       ? record.attributes.registration.activeComplianceStatusCode
+       //       : 0
+       // ),
+       registration_status: CircuitString.fromString(record.attributes.entity.status || ''),
+       //nextRenewalDate: CircuitString.fromString(record.attributes.registration?.nextRenewalDate || '')
+    });*/
 
    // =================================== Oracle Signature Generation ===================================
    // Create message hash
@@ -97,15 +96,16 @@ async function getGLEIFVerificationWithSign(companyName: string, typeOfNet: stri
 
    console.log("Final value of num:", zkApp.num.get().toJSON());
    console.log('✅ Proof verified successfully!');
+   return proof.toJSON();
 }
 async function main() {
-   
+
    // Get company name from command line
    const companyName = process.argv[2];
    let typeOfNet = process.argv[3];
    console.log('Company Name:', companyName);
-   await getGLEIFVerificationWithSign(companyName, typeOfNet)
-
+   let proof = await getGLEIFVerificationWithSign(companyName, typeOfNet)
+   //console.log('Proof:', proof);
 
 }
 

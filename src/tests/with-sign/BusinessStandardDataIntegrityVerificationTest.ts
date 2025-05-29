@@ -1,4 +1,90 @@
-import { exec } from 'child_process';
+import { Field, Mina, PrivateKey, AccountUpdate } from 'o1js';
+import { BusinessStandardDataIntegrityZKProgram } from '../../zk-programs/with-sign/BusinessStandardDataIntegrityZKProgram.js';
+import { BusinessStandardDataIntegrityVerificationSmartContract } from '../../contracts/with-sign/BusinessStandardDataIntegrityVerificationSmartContract.js';
+import { createComplianceData } from './BSDIo1.js';
+import { readBLJsonFile } from './BSDIUtils.js';
+
+export async function getBSDIVerificationWithSign(blJsonFilePath: string, typeOfNet?: string) {
+   // Read BL JSON file
+   const evalBLJson = await readBLJsonFile(blJsonFilePath);
+
+   // Setup Mina local blockchain (or adapt for other networks)
+   const useProof = false;
+   const Local = await Mina.LocalBlockchain({ proofsEnabled: useProof });
+   Mina.setActiveInstance(Local);
+
+   const deployerAccount = Local.testAccounts[0];
+   const deployerKey = deployerAccount.key;
+   const senderAccount = Local.testAccounts[1];
+   const senderKey = senderAccount.key;
+
+   // Compile ZK program and contract
+   await BusinessStandardDataIntegrityZKProgram.compile();
+   const { verificationKey } = await BusinessStandardDataIntegrityVerificationSmartContract.compile();
+
+   // Deploy contract
+   const zkAppKey = PrivateKey.random();
+   const zkAppAddress = zkAppKey.toPublicKey();
+   const zkApp = new BusinessStandardDataIntegrityVerificationSmartContract(zkAppAddress);
+
+   const deployTxn = await Mina.transaction(
+      deployerAccount,
+      async () => {
+         AccountUpdate.fundNewAccount(deployerAccount);
+         await zkApp.deploy({ verificationKey });
+      }
+   );
+   await deployTxn.sign([deployerKey, zkAppKey]).send();
+
+   // Prepare compliance data and generate proof
+   const complianceData = createComplianceData(blJsonFilePath, evalBLJson);
+   const proof = await BusinessStandardDataIntegrityZKProgram.proveCompliance(Field(1), complianceData);
+
+   // Verify proof on-chain
+   const txn = await Mina.transaction(
+      senderAccount,
+      async () => {
+         await zkApp.verifyComplianceWithProof(proof);
+      }
+   );
+   await txn.prove();
+   await txn.sign([senderKey]).send();
+
+   return {
+      blJsonFilePath,
+      typeOfNet: typeOfNet ?? 'TESTNET',
+      proof: proof.toJSON ? proof.toJSON() : proof,
+      verificationTimestamp: new Date().toISOString()
+   };
+}
+
+// CLI entry point
+if (require.main === module) {
+   async function main() {
+      const blJsonFilePath = process.argv[2];
+      const typeOfNet = process.argv[3];
+      if (!blJsonFilePath) {
+         console.error("Usage: node BusinessStandardDataIntegrityVerificationTest.js <blJsonFilePath> [typeOfNet]");
+         process.exit(1);
+      }
+      try {
+         const result = await getBSDIVerificationWithSign(blJsonFilePath, typeOfNet);
+         console.log(JSON.stringify(result, null, 2));
+      } catch (err) {
+         console.error("Error:", err);
+         process.exit(1);
+      }
+   }
+   main();
+}
+
+
+
+
+
+
+
+/*import { exec } from 'child_process';
 import * as fs from 'fs';
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString } from 'o1js';
 import { BusinessStandardDataIntegrityZKProgram, BusinessStandardDataIntegrityComplianceData } from '../../zk-programs/with-sign/BusinessStandardDataIntegrityZKProgram.js';
@@ -141,3 +227,4 @@ async function main() {
 main().catch(err => {
    console.error('Error:', err);
 });
+*/
