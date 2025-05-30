@@ -96,28 +96,59 @@ npm run build
 
 Execute each of the following commands to run individual test cases:
 
+**CorporateRegistration :**
+
+i.TESTNET
 ```bash
-node ./build/tests/with-sign/CorporateRegistrationVerificationTestWithSign.js
+node ./build/tests/with-sign/CorporateRegistrationVerificationTestWithSign.js "U01112TZ2022PTC039493" "TESTNET"
+```
+ii.MAINNET
+```bash
+node ./build/tests/with-sign/CorporateRegistrationVerificationTestWithSign.js "U01112TZ2022PTC039493" "MAINNET"
+```
+iii.LOCAL
+```bash
+node ./build/tests/with-sign/CorporateRegistrationVerificationTestWithSign.js "zenova_mca" "LOCAL"
+```
+**EXIM**
+
+i.TESTNET
+```bash
+node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "zenova_dgft" "TESTNET"
+```
+ii.MAINNET
+```bash
+node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "zenova_dgft" "MAINNET"
+```
+iii.LOCAL
+```bash
+node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "zenova_dgft" "LOCAL"
+```
+**GLEIF**
+
+i.TESTNET
+```bash
+node ./build/tests/with-sign/GLEIFVerificationTestWithSign.js "SREE PALANI ANDAVAR AGROS PRIVATE LIMITED" 'TESTNET'
+```
+ii.MAINNET
+```bash
+node ./build/tests/with-sign/GLEIFVerificationTestWithSign.js "SREE PALANI ANDAVAR AGROS PRIVATE LIMITED" 'MAINNET'
+```
+iii.LOCAL
+```bash
+node ./build/tests/with-sign/GLEIFVerificationTestWithSign.js "zenova_gleif" 'LOCAL'
+```
+**BusinessStandardDataIntegrity**
+```bash
+node ./build/tests/with-sign/BusinessStandardDataIntegrityVerificationTest.js .\src\data\scf\actualBL1.json
 ```
 
 ```bash
-node ./build/tests/with-sign/EXIMVerificationTestWithSign.js
-```
-
-```bash
-node ./build/tests/with-sign/GLEIFVerificationTestWithSign.js
-```
-
-```bash
-node ./build/tests/with-sign/BusinessStandardDataIntegrityVerificationTest.js
-```
-
-```bash
-node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSign.js src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn src/data/scf/process/bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn result.txt
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSign.js 'SCF' src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn src/data/scf/process/bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn result.txt
 ```
 
 *   **Note:** For the `BusinessProcessIntegrityVerificationFileTestWithSign.js` test, you can replace `"bpmn-SCF-Example-Execution-Actual-Accepted-1.bpmn"` with any of the `*.bpmn` files located in the `ZK-PRET-DEV-V3\src\data\scf\process\` directory (Accepted or Rejected).
-*   
+*   you can replace `SCF` with `STABLECOIN` or `DVP`
 
 ## Business Process Prover for StableCoin Regulatory processes 
 
