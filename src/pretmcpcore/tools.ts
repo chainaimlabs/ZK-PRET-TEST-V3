@@ -8,6 +8,8 @@ import { getBSDIVerificationWithSignUtils } from "../tests/with-sign/BusinessSta
 import {getBPIVerificationFileTestWithSign} from "../tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSignUtils.js";
 import {getRiskADVZKWithSign} from "../tests/with-sign/RiskLiquidityACTUSVerifierTest_adv_zk_WithSignUtils.js";
 import { getRiskBasel3WithSign } from "../tests/with-sign/RiskLiquidityACTUSVerifierTest_basel3_WithsignUtils.js";
+import { getCorporateRegistrationVerificationTestWithSign } from '../tests/with-sign/CorporateRegistrationVerificationTestWithSignUtils.js';
+import { getEXIMVerificationWithSignUtils } from '../tests/with-sign/EXIMVerificationTestWithSignUtils.js';
 
 
 
@@ -85,6 +87,74 @@ export function registerPRETTools(server: McpServer) {
   );
 
   server.tool(
+    "get-Corporate-Registration-verification-with-sign",
+    "get Corporate-Registration data takes CIN and type of net TESTNET,MAINNET,etc and get Corporate-Registration compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
+    {
+      cin: z.string().describe("CIN for Corporate-Registration search (e.g., 'U01112TZ2022PTC039493')"),
+      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+    },
+    async ({ cin, typeOfNet }: { cin: string; typeOfNet?: string }) => {
+      try {
+        console.log(`Resolving Corporate-Registration data for company: ${cin} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await getCorporateRegistrationVerificationTestWithSign(cin, typeOfNet ?? 'TESTNET');
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              cin: cin,
+              response: response,
+              typeOfNet
+            }, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error resolving Corporate-Registration CIN: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
+
+
+  server.tool(
+    "get-EXIM-verification-with-sign",
+    "get EXIM data takes company name and type of net TESTNET,MAINNET,etc and get EXIM compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
+    {
+      companyName: z.string().describe("Company name for EXIM search (e.g., 'SREE PALANI ANDAVAR AGROS PRIVATE LIMITED')"),
+      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+    },
+    async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
+      try {
+        console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await getEXIMVerificationWithSignUtils(companyName, typeOfNet ?? 'TESTNET');
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              companyName: companyName,
+              response: response,
+              typeOfNet
+            }, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error resolving EXIM company name: ${error instanceof Error ? error.message : String(error)}`
+          }],
+          isError: true
+        };
+      }
+    }
+  );
+
+
+  server.tool(
     "get-Is-company-GLEIF-compliant",
     "get GLEIF data takes company name and type of net TESTNET,MAINNET,etc and get GLEIF compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
@@ -154,7 +224,7 @@ export function registerPRETTools(server: McpServer) {
     }
   );
   server.tool(
-    "get-MCA-data",
+    "get-CorporateRegistration-data",
     "get GLEIF data for a company name and depending on the environment it will call different apis example TESTNET vs MAINNET vs LOCAL",
     {
       cin: z.string().describe("CIN for MCA search (e.g., 'U01112TZ2022PTC039493')"),
@@ -193,7 +263,7 @@ export function registerPRETTools(server: McpServer) {
     {
       blJsonFilePath: z.string().describe("Path to the BL JSON file for evaluation(e.g., '.data/scf/actualBL1.json')"),
     },
-    async ({ blJsonFilePath }: { blJsonFilePath: string}) => {
+    async ({ blJsonFilePath }) => {
       try {
         const result = await getBSDIVerificationWithSignUtils(blJsonFilePath);
         return {
@@ -213,6 +283,8 @@ export function registerPRETTools(server: McpServer) {
       }
     }
   );
+
+
   server.tool(
     "get-BPI-compliance-verification",
     "Verify BPI compliance for a company using BL JSON file and produce a ZK proof.",
@@ -222,7 +294,7 @@ export function registerPRETTools(server: McpServer) {
       actualPath: z.string().describe("Path to the actual content file (e.g., '.src/data/scf/process/bpmn-SCF-Example-Process-Actual.bpmn')"),
       //blJsonFilePath: z.string().describe("Path to the BL JSON file for evaluation(e.g., '.data/scf/actualBL1.json')"),
     },
-    async ({ businessProcessType,expectedPath,actualPath }: { businessProcessType:string,expectedPath:string,actualPath:string}) => {
+    async ({ businessProcessType,expectedPath,actualPath }:{businessProcessType:string,expectedPath:string,actualPath:string}) => {
       try {
         const result = await getBPIVerificationFileTestWithSign(businessProcessType,expectedPath,actualPath);
         return {
@@ -277,9 +349,9 @@ export function registerPRETTools(server: McpServer) {
     "Verify Risk Liquidity ACTUS compliance for a user liquidity threshold and produce a ZK proof.",
     {
       userLiquidityThreshold_LCR: z.number().describe("User liquidity threshold for evaluation (e.g., '0.5','1','2')"),
-      url: z.string().describe("Optional URL to fetch JSON data from (e.g., 'https://example.com/data.json')")
+      url: z.string().url().describe("Optional URL to fetch JSON data from (e.g., 'https://example.com/data.json')")
     },
-    async ({ userLiquidityThreshold_LCR,url }:{userLiquidityThreshold_LCR:number,url:string}) => {
+    async ({ userLiquidityThreshold_LCR,url }) => {
       try {
         // const thresholdNumber = Number(userLiquidityThreshold_LCR);
         // if (isNaN(thresholdNumber)) {

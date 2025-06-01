@@ -40,7 +40,7 @@ import parseBpmn from '../../utils/parsebpmn.js';
 // }
 
 
-export async function getBPIVerificationFileTestWithSign(businessProcessType:string,expectedPath: string, actualPath: string) {
+export async function getBPIVerificationFileTestWithSign(businessProcessType:string,expectedBPMNFileName: string, actualBPMNFileName: string) {
    /*
    const outputData = {
       businessProcessIntegrityCheckID: 1,
@@ -55,6 +55,9 @@ export async function getBPIVerificationFileTestWithSign(businessProcessType:str
    //const actualPath = process.argv[3];
    //const actualPath = "abcdefg";
  
+   const expectedPath = await parseBpmn(expectedBPMNFileName) || "";
+   const actualPath = await parseBpmn(actualBPMNFileName) || "";
+
    console.log("/////////////////////////////////Business Process Type:////////////////////////////", businessProcessType);
    console.log("EXP:", expectedPath);
    console.log("ACT:", actualPath);
