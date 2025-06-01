@@ -121,20 +121,20 @@ Execute each of the following commands to run individual test cases:
   * TESTNET
   
     ```bash
-    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "zenova_dgft" "TESTNET"
+    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "palani" "TESTNET"
     ```
   * MAINNET
     
     ```bash
-    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "zenova_dgft" "MAINNET"
+    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "palani" "MAINNET"
     ```
   * LOCAL
     
     ```bash
-    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "zenova_dgft" "LOCAL"
+    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "palani" "LOCAL"
     ```
    **Note:** 
-   * For `EXIMVerificationTestWithSign` you can relpace `"zenova_dgft"` with your own CompanyName
+   * For `EXIMVerificationTestWithSign` you can relpace `"palani"` with your own CompanyName
 ---
 
 **GLEIF :**
