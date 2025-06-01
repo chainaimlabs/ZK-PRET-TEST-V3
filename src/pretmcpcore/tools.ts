@@ -191,7 +191,6 @@ export function registerPRETTools(server: McpServer) {
     "get-BSDI-compliance-verification",
     "Verify BSDI compliance for a company using BL JSON file and produce a ZK proof.",
     {
-      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
       blJsonFilePath: z.string().describe("Path to the BL JSON file for evaluation(e.g., '.data/scf/actualBL1.json')"),
     },
     async ({ blJsonFilePath }: { blJsonFilePath: string}) => {
@@ -218,7 +217,6 @@ export function registerPRETTools(server: McpServer) {
     "get-BPI-compliance-verification",
     "Verify BPI compliance for a company using BL JSON file and produce a ZK proof.",
     {
-      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
       businessProcessType: z.string().describe("Type of business process (e.g., 'SCF', 'BPI')"),
       expectedPath: z.string().describe("Path to the expected content file (e.g., '.src/data/scf/process/bpmn-SCF-Example-Process-Expected.bpmn')"),
       actualPath: z.string().describe("Path to the actual content file (e.g., '.src/data/scf/process/bpmn-SCF-Example-Process-Actual.bpmn')"),
@@ -237,7 +235,7 @@ export function registerPRETTools(server: McpServer) {
         return {
           content: [{
             type: "text",
-            text: `Error verifying BSDI compliance: ${error instanceof Error ? error.message : String(error)}`
+            text: `Error verifying BPI compliance: ${error instanceof Error ? error.message : String(error)}`
           }],
           isError: true
         };
@@ -248,7 +246,6 @@ export function registerPRETTools(server: McpServer) {
     "get-RiskLiquidityACTUS-Verifier-Test_adv_zk",
     "Verify Risk Liquidity ACTUS compliance for a user liquidity threshold and produce a ZK proof.",
     {
-      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
       userLiquidityThreshold: z.number().describe("User liquidity threshold for evaluation (e.g., '8','9')"),
     },
     async ({ userLiquidityThreshold }: { userLiquidityThreshold: number }) => {
@@ -279,7 +276,6 @@ export function registerPRETTools(server: McpServer) {
     "get-RiskLiquidityACTUS-Verifier-Test_Basel3_Withsign",
     "Verify Risk Liquidity ACTUS compliance for a user liquidity threshold and produce a ZK proof.",
     {
-      //companyName: z.string().describe("Company name for BSDI search (e.g., 'vernon_dgft')"),
       userLiquidityThreshold_LCR: z.number().describe("User liquidity threshold for evaluation (e.g., '0.5','1','2')"),
       url: z.string().describe("Optional URL to fetch JSON data from (e.g., 'https://example.com/data.json')")
     },

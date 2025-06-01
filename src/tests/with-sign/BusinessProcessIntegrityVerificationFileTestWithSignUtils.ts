@@ -54,7 +54,8 @@ export async function getBPIVerificationFileTestWithSign(businessProcessType:str
    //const expectedPath = "a(cb|bc)d(ef|f)g";
    //const actualPath = process.argv[3];
    //const actualPath = "abcdefg";
-
+ 
+   console.log("/////////////////////////////////Business Process Type:////////////////////////////", businessProcessType);
    console.log("EXP:", expectedPath);
    console.log("ACT:", actualPath);
    const useProof = false;
@@ -162,6 +163,7 @@ export async function getBPIVerificationFileTestWithSign(businessProcessType:str
  
    }
    else if (businessProcessType === 'SCF'){
+      console.log("/************************Business Process Type is SCF********************************************/");
       proof = await BusinessProcessIntegrityZKProgram.proveComplianceSCF(Field(0), bpComplianceData, oracleSignature);
    }
    else if (businessProcessType === 'DVP'){
