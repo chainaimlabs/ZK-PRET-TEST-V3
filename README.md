@@ -192,6 +192,29 @@ Actual BPMN File Name: src/data/STABLECOIN/process/bpmnCircuitSTABLECOIN-rejecte
 
 
 
+## Business Process Prover for Supply Chain Delivery Versus Payments processes
+
+The process model for the deliveruVersusPayment processes for Supply chain processes is modeled , and valid paths to compliance produces a proof, and non compliance does not produce a proof.
+
+
+## Passing Case 
+
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSign.js "DVP" src/data/DVP/process/bpmnCircuitDVP-expected.bpmn src/data/DVP/process/bpmnCircuitDVP-rejected1.bpmn result.txt
+Expected BPMN File Name: src/data/DVP/process/bpmnCircuitDVP-expected.bpmn
+Actual BPMN File Name: src/data/DVP/process/bpmnCircuitDVP-accepted1.bpmn
+
+## Failing Case 
+
+node ./build/tests/with-sign/BusinessProcessIntegrityVerificationFileTestWithSign.js "DVP" src/data/DVP/process/bpmnCircuitDVP-expected.bpmn src/data/DVP/process/bpmnCircuitDVP-rejected1.bpmn result.txt
+Expected BPMN File Name: src/data/DVP/process/bpmnCircuitDVP-expected.bpmn
+Actual BPMN File Name: src/data/DVP/process/bpmnCircuitDVP-rejected1.bpmn
+
+
+
+
+
+
+
 
 ```bash
 node ./build/tests/with-sign/ComposedRecursive3LevelVerificationTestWithSign.js
