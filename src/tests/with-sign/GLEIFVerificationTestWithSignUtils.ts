@@ -11,6 +11,8 @@ import { GLEIFComplianceDataO1 } from './GLEIFo1.js'
 
 export async function getGLEIFVerificationWithSignUtils(companyName: string, typeOfNet: string) {
 
+
+
    // Compile programs
    await GLEIF.compile();
    const { verificationKey } = await GLEIFVerifierSmartContract.compile();

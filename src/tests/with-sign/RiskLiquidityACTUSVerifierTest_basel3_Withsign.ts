@@ -1,6 +1,6 @@
 import { Field, Mina, PrivateKey, AccountUpdate, CircuitString, Poseidon, Signature } from 'o1js';
 import { loadAndProcessJsonData } from '../../core/map_basel3.js';
-import { LiquidityRatioZkprogram, ACTUSData } from '../../zk-programs/with-sign/RiskLiquidityACTUSZKProgram_basel3_Withsign.js';
+import { LiquidityRatioZkprogram, ACTUSDatao1 } from '../../zk-programs/with-sign/RiskLiquidityACTUSZKProgram_basel3_Withsign.js';
 import { LiquidityRatioVerifierSmartContract } from '../../contracts/with-sign/RiskLiquidityVerifierACTUSSmartContract_basel3_Withsign.js';
 import { getPrivateKeyFor } from '../../core/OracleRegistry.js';
 import { fetchActusBasel3Data } from './RiskUtilsBasel3.js';

@@ -19,7 +19,7 @@ import { getPublicKeyFor } from '../../core/OracleRegistry.js'
 // import axios from 'axios';
 const MAX_LENGTH = 120; // Define a maximum length for cash flows
 
-export class ACTUSData extends Struct({
+export class ACTUSDatao1 extends Struct({
    scenarioID: CircuitString,
    scenarioName: CircuitString,
    scenarioName_str: String,
@@ -103,19 +103,19 @@ export const LiquidityRatioZkprogram = ZkProgram({
    methods: {
       proveCompliance: { // Generates the public output
          privateInputs: [
-            ACTUSData,
+            ACTUSDatao1,
             Signature,
          ],
          async method(
             LiquidityRatioToProve: Field,
-            LiquidityRatioData: ACTUSData,
+            LiquidityRatioData: ACTUSDatao1,
             oracleSignature: Signature,
          ): Promise<liquidityratioDataPublicOutput> {
             let out = Bool(true);
 
             //try {
             //========================================================================================================
-            const risk1DataHash = Poseidon.hash(ACTUSData.toFields(LiquidityRatioData));
+            const risk1DataHash = Poseidon.hash(ACTUSDatao1.toFields(LiquidityRatioData));
             const registryPublicKey = getPublicKeyFor('RISK');
             const isValidSignature = oracleSignature.verify(
                registryPublicKey,
