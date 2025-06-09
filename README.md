@@ -121,17 +121,17 @@ Execute each of the following commands to run individual test cases:
   * TESTNET
   
     ```bash
-    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "palani" "TESTNET"
+    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "SREE PALANI ANDAVAR AGROS PRIVATE LIMITED" "TESTNET"
     ```
   * MAINNET
     
     ```bash
-    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "palani" "MAINNET"
+    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "SREE PALANI ANDAVAR AGROS PRIVATE LIMITED" "MAINNET"
     ```
   * LOCAL
     
     ```bash
-    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "palani" "LOCAL"
+    node ./build/tests/with-sign/EXIMVerificationTestWithSign.js "SREE PALANI ANDAVAR AGROS PRIVATE LIMITED" "LOCAL"
     ```
    **Note:** 
    * For `EXIMVerificationTestWithSign` you can relpace `"palani"` with your own CompanyName
