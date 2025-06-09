@@ -141,9 +141,9 @@ import { getEXIMVerificationWithSignUtils } from './EXIMVerificationTestWithSign
 // }
 async function main() {
    const companyName = process.argv[2];
-   let typeOfNet = process.argv[3];
+   //let typeOfNet = process.argv[3];
    console.log('Company Name:', companyName);
-   let proof = await getEXIMVerificationWithSignUtils(companyName, typeOfNet)
+   let proof = await getEXIMVerificationWithSignUtils(companyName)
 
 }
 main().catch(err => {

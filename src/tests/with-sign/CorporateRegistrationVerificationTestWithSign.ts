@@ -108,10 +108,10 @@ import { getCorporateRegistrationVerificationTestWithSign } from './CorporateReg
 // }
 
 async function main() {
-   const companyName = process.argv[2];
-   let typeOfNet = process.argv[3];
-   console.log('Company Name:', companyName);
-   let proof = await getCorporateRegistrationVerificationTestWithSign(companyName, typeOfNet)
+   const cin = process.argv[2];
+   //let typeOfNet = process.argv[3];
+   console.log('CIN:', cin);//cin
+   let proof = await getCorporateRegistrationVerificationTestWithSign(cin)
 }
 main().catch(err => {
    console.error('Error:', err);

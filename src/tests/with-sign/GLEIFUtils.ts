@@ -6,10 +6,11 @@ dotenv.config();
 /**
  * Fetch company data from GLEIF API based on company name and network type
  */
-export async function fetchGLEIFCompanyData(companyName: string, typeOfNet: string): Promise<any> {
+export async function fetchGLEIFCompanyData(companyName: string): Promise<any> {
   let BASEURL;
   let url;
 
+  let typeOfNet = process.env.BUILD_ENV;
   if (!typeOfNet) {
     typeOfNet = 'TESTNET';
   }
@@ -56,8 +57,8 @@ export async function fetchGLEIFCompanyData(companyName: string, typeOfNet: stri
 /**
  * Check if a company is GLEIF compliant by verifying if company data exists and status is ACTIVE
  */
-export async function isCompanyGLEIFCompliant(companyName: string, typeOfNet: string): Promise<boolean> {
-  const res = await fetchGLEIFCompanyData(companyName, typeOfNet);
+export async function isCompanyGLEIFCompliant(companyName: string): Promise<boolean> {
+  const res = await fetchGLEIFCompanyData(companyName);
 
   // Handle both array and object responses
   let firstRecord;

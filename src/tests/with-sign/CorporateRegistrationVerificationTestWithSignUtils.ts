@@ -11,10 +11,11 @@ import { ComplianceData } from '../../tests/with-sign/CorporateRegistrationo1.js
 
 //import axios from 'axios';
 
-export async function getCorporateRegistrationVerificationTestWithSign(cin: string, typeofnet: string) {
+export async function getCorporateRegistrationVerificationTestWithSign(cin: string) {
 
    //console.log("Oracle Private Key:", mcaRegistry);
 
+   let typeofNet = process.env.BUILD_ENV ;
 
    await CorporateRegistration.compile();
    const { verificationKey } = await CorporateRegistrationVerifierSmartContract.compile();
@@ -44,9 +45,9 @@ export async function getCorporateRegistrationVerificationTestWithSign(cin: stri
    // const cin = process.argv[2];
    // const typeofnet = process.argv[3];
 
-   const parsedData = await fetchCorporateRegistrationData(cin, typeofnet);
+   const parsedData = await fetchCorporateRegistrationData(cin);
    
-   const complianceData = getCorpRegComplianceData(parsedData, typeofnet);
+   const complianceData = getCorpRegComplianceData(parsedData);
    
    /*const complianceData = new ComplianceData({
       companyID: CircuitString.fromString(parsedData["CIN"] || ''),

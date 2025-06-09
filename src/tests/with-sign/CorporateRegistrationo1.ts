@@ -44,7 +44,8 @@ export class ComplianceData extends Struct({
    // mcaID: Field,                      // MCA ID
 }) { }
 
-export function getCorpRegComplianceData(parsedData: any, typeofnet: string): ComplianceData {
+export function getCorpRegComplianceData(parsedData: any): ComplianceData {
+  let typeofnet = process.env.BUILD_ENV;
   if (typeofnet === 'LOCAL') {
     return new ComplianceData({
       companyID: CircuitString.fromString(parsedData["CIN"] || ''),

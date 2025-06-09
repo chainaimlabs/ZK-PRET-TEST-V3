@@ -14,7 +14,7 @@ import {EXIMComplianceDataO1} from './EXIMo1.js'
 import { EXIMdeployerAccount, EXIMsenderAccount, EXIMdeployerKey, EXIMsenderKey, getPrivateKeyFor, Local } from '../../core/OracleRegistry.js';
 
 
-export async function getEXIMVerificationWithSignUtils(companyName: string, typeOfNet: string){
+export async function getEXIMVerificationWithSignUtils(companyName: string){
    // Compile programs
    await EXIM.compile();
    const { verificationKey } = await EXIMVerifierSmartContract.compile();
@@ -53,12 +53,12 @@ export async function getEXIMVerificationWithSignUtils(companyName: string, type
       // const companyName = process.argv[2];
       // let typeOfNet = process.argv[3];
       console.log('Company Name:', companyName);
-      console.log('Type of Net:', typeOfNet);
+      //console.log('Type of Net:', typeOfNet);
    
       // Fetch company data using the utility function
       let parsedData;
       try {
-        parsedData = await fetchEXIMCompanyData(companyName,typeOfNet);
+        parsedData = await fetchEXIMCompanyData(companyName);
       } catch (err: any) {
         console.error(err.message);
         process.exit(1);

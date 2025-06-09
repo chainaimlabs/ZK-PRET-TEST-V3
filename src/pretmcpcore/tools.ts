@@ -24,19 +24,18 @@ export function registerPRETTools(server: McpServer) {
     "get GLEIF data for a company name and depending on the environment it will call different apis example TESTNET vs MAINNET vs LOCAL",
     {
       companyName: z.string().describe("Company name for GLEIF search (e.g., 'SREE PALANI ANDAVAR AGROS PRIVATE LIMITED')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+      //typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
     },
-    async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
+    async ({ companyName }: { companyName: string }) => {
       try {
-        console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const response = await fetchGLEIFCompanyData(companyName, typeOfNet ?? 'TESTNET');
+        //console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await fetchGLEIFCompanyData(companyName);
         return {
           content: [{
             type: "text",
             text: JSON.stringify({
               companyName: companyName,
-              response: response,
-              typeOfNet
+              response: response
             }, null, 2)
           }]
         };
@@ -58,19 +57,18 @@ export function registerPRETTools(server: McpServer) {
     "get GLEIF data takes company name and type of net TESTNET,MAINNET,etc and get GLEIF compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
       companyName: z.string().describe("Company name for GLEIF search (e.g., 'SREE PALANI ANDAVAR AGROS PRIVATE LIMITED')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+      //typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
     },
-    async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
+    async ({ companyName}: { companyName: string }) => {
       try {
-        console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const response = await getGLEIFVerificationWithSignUtils(companyName, typeOfNet ?? 'TESTNET');
+        //console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await getGLEIFVerificationWithSignUtils(companyName);
         return {
           content: [{
             type: "text",
             text: JSON.stringify({
               companyName: companyName,
-              response: response,
-              typeOfNet
+              response: response
             }, null, 2)
           }]
         };
@@ -91,19 +89,18 @@ export function registerPRETTools(server: McpServer) {
     "get Corporate-Registration data takes CIN and type of net TESTNET,MAINNET,etc and get Corporate-Registration compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
       cin: z.string().describe("CIN for Corporate-Registration search (e.g., 'U01112TZ2022PTC039493')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+      //typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
     },
-    async ({ cin, typeOfNet }: { cin: string; typeOfNet?: string }) => {
+    async ({ cin }: { cin: string }) => {
       try {
-        console.log(`Resolving Corporate-Registration data for company: ${cin} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const response = await getCorporateRegistrationVerificationTestWithSign(cin, typeOfNet ?? 'TESTNET');
+        //console.log(`Resolving Corporate-Registration data for company: ${cin} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await getCorporateRegistrationVerificationTestWithSign(cin);
         return {
           content: [{
             type: "text",
             text: JSON.stringify({
               cin: cin,
-              response: response,
-              typeOfNet
+              response: response
             }, null, 2)
           }]
         };
@@ -125,19 +122,18 @@ export function registerPRETTools(server: McpServer) {
     "get EXIM data takes company name and type of net TESTNET,MAINNET,etc and get EXIM compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
       companyName: z.string().describe("Company name for EXIM search (e.g., 'SREE PALANI ANDAVAR AGROS PRIVATE LIMITED')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+      //typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
     },
-    async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
+    async ({ companyName }: { companyName: string }) => {
       try {
-        console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const response = await getEXIMVerificationWithSignUtils(companyName, typeOfNet ?? 'TESTNET');
+        //console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await getEXIMVerificationWithSignUtils(companyName);
         return {
           content: [{
             type: "text",
             text: JSON.stringify({
               companyName: companyName,
-              response: response,
-              typeOfNet
+              response: response
             }, null, 2)
           }]
         };
@@ -159,12 +155,12 @@ export function registerPRETTools(server: McpServer) {
     "get GLEIF data takes company name and type of net TESTNET,MAINNET,etc and get GLEIF compliance for different regions data and produces proof verified in MINA BlockChain in LOCAL,TESTNET,DEVNET,MAINNET",
     {
       companyName: z.string().describe("Company name for GLEIF search (e.g., 'SREE PALANI ANDAVAR AGROS PRIVATE LIMITED')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+      //typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
     },
-    async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
+    async ({ companyName }: { companyName: string }) => {
       try {
-        console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const isCompliant = await isCompanyGLEIFCompliant(companyName, typeOfNet ?? 'TESTNET');
+        //console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const isCompliant = await isCompanyGLEIFCompliant(companyName);
         return {
           content: [{
             type: "text",
@@ -172,7 +168,6 @@ export function registerPRETTools(server: McpServer) {
             companyName: companyName,
             isGLEIFCompliant: isCompliant,
             status: isCompliant ? 'ACTIVE' : 'INACTIVE/NOT_FOUND',
-            typeOfNet: typeOfNet ?? 'TESTNET',
             verificationTimestamp: new Date().toISOString()
           }, null, 2)
           }]
@@ -196,19 +191,18 @@ export function registerPRETTools(server: McpServer) {
     "get EXIM data takes company name and type of net TESTNET,MAINNET,etc and get EXIM compliance data for different regions",
     {
       companyName: z.string().describe("Company name for EXIM search (e.g., 'zenova_dgft')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+      //typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
     },
-    async ({ companyName, typeOfNet }: { companyName: string; typeOfNet?: string }) => {
+    async ({ companyName }: { companyName: string }) => {
       try {
-        console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const response = await fetchEXIMCompanyData(companyName, typeOfNet ?? 'TESTNET');
+        //console.log(`Resolving GLEIF data for company: ${companyName} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await fetchEXIMCompanyData(companyName);
         return {
           content: [{
             type: "text",
             text: JSON.stringify({
               companyName: companyName,
-              response: response,
-              typeOfNet
+              response: response
             }, null, 2)
           }]
         };
@@ -228,19 +222,18 @@ export function registerPRETTools(server: McpServer) {
     "get GLEIF data for a company name and depending on the environment it will call different apis example TESTNET vs MAINNET vs LOCAL",
     {
       cin: z.string().describe("CIN for MCA search (e.g., 'U01112TZ2022PTC039493')"),
-      typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
+      //typeOfNet: z.string().optional().describe("Network name (e.g., 'LOCAL OR TESTNET OR MAINNET')")
     },
-    async ({ cin, typeOfNet }: { cin: string; typeOfNet?: string }) => {
+    async ({ cin }: { cin: string}) => {
       try {
-        console.log(`Resolving GLEIF data for company: ${cin} on network: ${typeOfNet ?? 'TESTNET'}`);
-        const response = await fetchCorporateRegistrationData(cin, typeOfNet ?? 'TESTNET');
+        //console.log(`Resolving GLEIF data for company: ${cin} on network: ${typeOfNet ?? 'TESTNET'}`);
+        const response = await fetchCorporateRegistrationData(cin);
         return {
           content: [{
             type: "text",
             text: JSON.stringify({
               cin: cin,
-              response: response,
-              typeOfNet
+              response: response
             }, null, 2)
           }]
         };

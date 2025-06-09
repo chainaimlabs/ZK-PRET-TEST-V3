@@ -2,10 +2,11 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export async function fetchEXIMCompanyData(companyName: string, typeOfNet: string): Promise<any> {
+export async function fetchEXIMCompanyData(companyName: string): Promise<any> {
     //const BASEURL = process.env.GLEIF_URL_PROD;
     let BASEURL: string | undefined;
     let url: string;
+    let typeOfNet = process.env.BUILD_ENV;
     if (!typeOfNet) {
         typeOfNet = 'TESTNET';
     }

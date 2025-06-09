@@ -9,7 +9,7 @@ import { fetchGLEIFCompanyData } from './GLEIFUtils.js';
 import { getGLEIFComplianceDataO1 } from './GLEIFo1.js';
 import { GLEIFComplianceDataO1 } from './GLEIFo1.js'
 
-export async function getGLEIFVerificationWithSignUtils(companyName: string, typeOfNet: string) {
+export async function getGLEIFVerificationWithSignUtils(companyName: string) {
 
 
 
@@ -39,7 +39,7 @@ export async function getGLEIFVerificationWithSignUtils(companyName: string, typ
    // Fetch company data using the utility function
    let parsedData;
    try {
-      parsedData = await fetchGLEIFCompanyData(companyName, typeOfNet);
+      parsedData = await fetchGLEIFCompanyData(companyName);
    } catch (err: any) {
       console.error(err.message);
       process.exit(1);

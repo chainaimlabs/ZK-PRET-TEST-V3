@@ -85,9 +85,10 @@ interface MasterDataRequest {
   reason: string;
 }
 
-export async function fetchCorporateRegistrationData(cin: string,typeOfNet: string): Promise<any> {
+export async function fetchCorporateRegistrationData(cin: string): Promise<any> {
   let CORPREG_URL: string | undefined;
 
+  let typeOfNet = process.env.BUILD_ENV;
   // Default to TESTNET if not provided or empty
   if (!typeOfNet) {
     typeOfNet = 'TESTNET';
